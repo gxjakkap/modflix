@@ -1,0 +1,26 @@
+{
+	"name": "@modflix/auth",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts",
+		"./client": "./src/client.ts"
+	},
+	"types": "src/index.ts",
+	"files": [
+		"src/**/*"
+	],
+	"scripts": {
+		"auth:seed": "tsx src/seed.ts"
+	},
+	"devDependencies": {
+		"dotenv": "^17.2.1",
+		"tsx": "^4.20.5"
+	},
+	"dependencies": {
+		"@modflix/db": "workspace:*",
+		"better-auth": "^1.3.7",
+		"zod": "^4.0.17"
+	}
+}
