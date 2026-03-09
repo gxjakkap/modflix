@@ -7,6 +7,7 @@
 	},
 	"dependencies": {
 		"@modflix/auth": "workspace:*",
+		"@modflix/env": "workspace:*",
 		"elysia": "latest"
 	},
 	"devDependencies": {

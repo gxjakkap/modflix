@@ -4,6 +4,10 @@
   "workspaces": {
     "": {
       "name": "my-turborepo",
+      "dependencies": {
+        "@t3-oss/env-core": "^0.13.10",
+        "zod": "^4.3.6",
+      },
       "devDependencies": {
         "@biomejs/biome": "2.3.8",
         "prettier": "^3.6.2",
@@ -16,6 +20,7 @@
       "version": "1.0.50",
       "dependencies": {
         "@modflix/auth": "workspace:*",
+        "@modflix/env": "workspace:*",
         "elysia": "latest",
       },
       "devDependencies": {
@@ -26,7 +31,10 @@
       "name": "web",
       "version": "0.0.0",
       "dependencies": {
+        "@elysiajs/eden": "^1.4.8",
+        "@modflix/api-types": "workspace:*",
         "@modflix/auth": "workspace:*",
+        "@modflix/env": "workspace:*",
         "@tailwindcss/vite": "^4.2.1",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
@@ -52,6 +60,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@modflix/db": "workspace:*",
+        "@modflix/env": "workspace:*",
         "better-auth": "^1.3.7",
         "zod": "^4.0.17",
       },
@@ -68,6 +77,7 @@
       "name": "@modflix/db",
       "version": "0.0.0",
       "dependencies": {
+        "@modflix/env": "workspace:*",
         "drizzle-orm": "^0.36.4",
         "pg": "^8.13.1",
         "postgres": "^3.4.5",
@@ -78,6 +88,17 @@
         "drizzle-kit": "^0.28.1",
         "tsx": "^4.19.2",
         "typescript": "^5.2.2",
+      },
+    },
+    "packages/env": {
+      "name": "@modflix/env",
+      "version": "0.0.0",
+      "dependencies": {
+        "@t3-oss/env-core": "^0.13.10",
+        "zod": "^4.0.0",
+      },
+      "devDependencies": {
+        "vite": "^7.3.1",
       },
     },
   },
@@ -135,6 +156,8 @@
     "@electric-sql/pglite-socket": ["@electric-sql/pglite-socket@0.0.20", "", { "peerDependencies": { "@electric-sql/pglite": "0.3.15" }, "bin": { "pglite-server": "dist/scripts/server.js" } }, "sha512-J5nLGsicnD9wJHnno9r+DGxfcZWh+YJMCe0q/aCgtG6XOm9Z7fKeite8IZSNXgZeGltSigM9U/vAWZQWdgcSFg=="],
 
     "@electric-sql/pglite-tools": ["@electric-sql/pglite-tools@0.2.20", "", { "peerDependencies": { "@electric-sql/pglite": "0.3.15" } }, "sha512-BK50ZnYa3IG7ztXhtgYf0Q7zijV32Iw1cYS8C+ThdQlwx12V5VZ9KRJ42y82Hyb4PkTxZQklVQA9JHyUlex33A=="],
+
+    "@elysiajs/eden": ["@elysiajs/eden@1.4.8", "", { "peerDependencies": { "elysia": ">=1.4.19" } }, "sha512-a7oct2kFa49tH+GawZtSUCZR2rQgucNYgGLz8alXUqb4IrU3PASA0T4zXJw4MhdV1Xb6vyiR7p7kkqJcVjgbkA=="],
 
     "@esbuild-kit/core-utils": ["@esbuild-kit/core-utils@3.3.2", "", { "dependencies": { "esbuild": "~0.18.20", "source-map-support": "^0.5.21" } }, "sha512-sPRAnw9CdSsRmEtnsl2WXWdyquogVpB3yZ3dgwJfe8zrOzTsV7cJvmwrKVa+0ma5BoiGJ+BoqkMvawbayKUsqQ=="],
 
@@ -237,6 +260,8 @@
     "@modflix/biome-config": ["@modflix/biome-config@workspace:packages/biome-config"],
 
     "@modflix/db": ["@modflix/db@workspace:packages/db"],
+
+    "@modflix/env": ["@modflix/env@workspace:packages/env"],
 
     "@mongodb-js/saslprep": ["@mongodb-js/saslprep@1.4.6", "", { "dependencies": { "sparse-bitfield": "^3.0.3" } }, "sha512-y+x3H1xBZd38n10NZF/rEBlvDOOMQ6LKUTHqr8R9VkJ+mmQOYtJFxIlkkK8fZrtOiL6VixbOBWMbZGBdal3Z1g=="],
 
@@ -349,6 +374,8 @@
     "@swc/counter": ["@swc/counter@0.1.3", "", {}, "sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ=="],
 
     "@swc/types": ["@swc/types@0.1.25", "", { "dependencies": { "@swc/counter": "^0.1.3" } }, "sha512-iAoY/qRhNH8a/hBvm3zKj9qQ4oc2+3w1unPJa2XvTK3XjeLXtzcCingVPw/9e5mn1+0yPqxcBGp9Jf0pkfMb1g=="],
+
+    "@t3-oss/env-core": ["@t3-oss/env-core@0.13.10", "", { "peerDependencies": { "arktype": "^2.1.0", "typescript": ">=5.0.0", "valibot": "^1.0.0-beta.7 || ^1.0.0", "zod": "^3.24.0 || ^4.0.0" }, "optionalPeers": ["arktype", "typescript", "valibot", "zod"] }, "sha512-NNFfdlJ+HmPHkLi2HKy7nwuat9SIYOxei9K10lO2YlcSObDILY7mHZNSHsieIM3A0/5OOzw/P/b+yLvPdaG52g=="],
 
     "@tailwindcss/node": ["@tailwindcss/node@4.2.1", "", { "dependencies": { "@jridgewell/remapping": "^2.3.5", "enhanced-resolve": "^5.19.0", "jiti": "^2.6.1", "lightningcss": "1.31.1", "magic-string": "^0.30.21", "source-map-js": "^1.2.1", "tailwindcss": "4.2.1" } }, "sha512-jlx6sLk4EOwO6hHe1oCGm1Q4AN/s0rSrTTPBGPM0/RQ6Uylwq17FuU8IeJJKEjtc6K6O07zsvP+gDO6MMWo7pg=="],
 

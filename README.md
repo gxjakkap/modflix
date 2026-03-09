@@ -72,4 +72,4 @@ bun run dev
 
 ## Disclaimer
 
-Contrary to your believe, this README is entirely written by human, not AI.
+Contrary to what you might believe, this README is entirely written by human, not AI.

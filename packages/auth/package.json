@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@modflix/db": "workspace:*",
+		"@modflix/env": "workspace:*",
 		"better-auth": "^1.3.7",
 		"zod": "^4.0.17"
 	}

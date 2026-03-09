@@ -1,15 +1,12 @@
 import { db } from "@modflix/db"
+import { serverEnv } from "@modflix/env"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { admin, username } from "better-auth/plugins"
 import { createAccessControl } from "better-auth/plugins/access"
 import { adminAc, defaultStatements } from "better-auth/plugins/admin/access"
-import * as dotenv from "dotenv"
-import { resolve } from "path"
 
 import { Roles } from "./roles"
-
-dotenv.config({ path: resolve("../../.env") })
 
 const statement = {
 	...defaultStatements,
@@ -50,6 +47,6 @@ export const auth = betterAuth({
 		}),
 	],
 	trustedOrigins: [
-		process.env.API_CORS_ORIGIN || "http://localhost:3000",
+		serverEnv.API_URL,
 	],
 })
