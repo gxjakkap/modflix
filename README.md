@@ -31,7 +31,7 @@ This project encourage the use of [Bun](https://bun.com/docs) as runtime and pac
 curl -fsSL https://bun.com/install | bash # linux user might need to install unzip package
 ```
 
-### Windows
+#### Windows
 
 Open Powershell and paste
 
