@@ -6,7 +6,11 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "check-types": "turbo run check-types",
+    "db:check": "bun run --filter @modflix/db db:check",
+    "db:generate": "bun run --filter @modflix/db db:generate",
+    "db:migrate": "bun run --filter @modflix/db db:migrate",
+    "auth:seed": "bun run --filter @modflix/auth auth:seed"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",

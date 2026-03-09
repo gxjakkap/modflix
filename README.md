@@ -63,11 +63,34 @@ cp .env.example .env
 
 ### Running Locally
 
+For first time setup, run these commands
+
+```sh
+docker compose -f compose-db.yml up -d # linux user might need to sudo this command
+bun run db:migrate
+bun run auth:seed <email> <username> # set up local admin account
+```
+
 To run development environment, Run below commands.
 
 ```sh
 docker compose -f compose-db.yml up -d # linux user might need to sudo this command
 bun run dev
+```
+
+### Generate and consume Drizzle migration files
+
+When editing Drizzle schema, you need to generate new [migration file](https://orm.drizzle.team/docs/migrations).
+
+```sh
+bun run db:generate
+```
+
+When there's new migration file from others' commit, you need to migrate those to your local development database
+
+```sh
+bun run db:check # check if migration is necessary
+bun run db:migrate
 ```
 
 ## Disclaimer
