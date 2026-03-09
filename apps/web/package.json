@@ -9,7 +9,9 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@elysiajs/eden": "^1.4.8",
 		"@modflix/auth": "workspace:*",
+		"@modflix/api-types": "workspace:*",
 		"@tailwindcss/vite": "^4.2.1",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
