@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
+    "@modflix/biome-config": "workspace:*",
     "prettier": "^3.6.2",
     "tsx": "^4.21.0",
     "turbo": "^2.8.10",
