@@ -11,6 +11,7 @@
       "devDependencies": {
         "@biomejs/biome": "2.3.8",
         "prettier": "^3.6.2",
+        "tsx": "^4.21.0",
         "turbo": "^2.8.10",
         "typescript": "5.9.2",
       },
@@ -24,6 +25,7 @@
         "elysia": "latest",
       },
       "devDependencies": {
+        "@modflix/biome-config": "workspace:*",
         "bun-types": "latest",
       },
     },
@@ -42,6 +44,7 @@
         "tailwindcss": "^4.2.1",
       },
       "devDependencies": {
+        "@modflix/biome-config": "workspace:*",
         "@types/node": "^24.10.1",
         "@types/react": "^19.2.7",
         "@types/react-dom": "^19.2.3",
@@ -54,6 +57,9 @@
     },
     "packages/api-types": {
       "name": "@modflix/api-types",
+      "devDependencies": {
+        "@modflix/biome-config": "workspace:*",
+      },
     },
     "packages/auth": {
       "name": "@modflix/auth",
@@ -65,6 +71,7 @@
         "zod": "^4.0.17",
       },
       "devDependencies": {
+        "@modflix/biome-config": "workspace:*",
         "dotenv": "^17.2.1",
         "tsx": "^4.20.5",
       },
@@ -83,6 +90,7 @@
         "postgres": "^3.4.5",
       },
       "devDependencies": {
+        "@modflix/biome-config": "workspace:*",
         "@types/pg": "^8.11.10",
         "dotenv": "^17.2.1",
         "drizzle-kit": "^0.28.1",

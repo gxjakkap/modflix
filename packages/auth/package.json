@@ -15,6 +15,7 @@
 		"auth:seed": "tsx src/seed.ts"
 	},
 	"devDependencies": {
+		"@modflix/biome-config": "workspace:*",
 		"dotenv": "^17.2.1",
 		"tsx": "^4.20.5"
 	},
