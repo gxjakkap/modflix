@@ -29,10 +29,10 @@ FROM rbase AS runner
 
 WORKDIR /app
 
-RUN addgroup --system --gid 1001 runner
-RUN adduser --system --uid 1001 app
+RUN addgroup --system --gid 1001 bunuser \
+  && adduser --system --uid 1001 --ingroup bunuser bunuser
 
-USER app
+USER bunuser
 
 EXPOSE 3000
 ENV PORT=3000
