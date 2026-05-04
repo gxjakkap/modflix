@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "modflix",
   "private": true,
   "scripts": {
     "build": "turbo run build",
@@ -10,12 +10,14 @@
     "db:check": "bun run --filter @modflix/db db:check",
     "db:generate": "bun run --filter @modflix/db db:generate",
     "db:migrate": "bun run --filter @modflix/db db:migrate",
+    "db:gen-schema": "bun run --filter @modflix/db db:gen-schema",
     "auth:seed": "bun run --filter @modflix/auth auth:seed"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
     "@modflix/biome-config": "workspace:*",
     "prettier": "^3.6.2",
+    "tsx": "^4.21.0",
     "turbo": "^2.8.10",
     "typescript": "5.9.2"
   },
