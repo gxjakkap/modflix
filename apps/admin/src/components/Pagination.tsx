@@ -1,10 +1,10 @@
 interface PaginationProps {
-    current: number
-    total: number
-    onChange: (page: number) => void
+  current: number;
+  total: number;
+  onChange: (page: number) => void;
 }
 
-function Pagination({ current, total, onChange }: PaginationProps) {
+export default function Pagination({ current, total, onChange }: PaginationProps) {
   return (
     <div style={s.wrap}>
       {Array.from({ length: total }, (_, i) => i + 1).map(n => (
@@ -19,8 +19,6 @@ function Pagination({ current, total, onChange }: PaginationProps) {
     </div>
   );
 }
-
-export default Pagination;
 
 const s: Record<string, React.CSSProperties> = {
   wrap: { 
@@ -50,11 +48,11 @@ const s: Record<string, React.CSSProperties> = {
     width: '26px', 
     height: '26px', 
     borderRadius: '8px',
-    border: '2px solid #000', 
     background: '#e85d00',
     color: '#fff', 
     cursor: 'pointer', 
     fontSize: '12px',
     fontWeight: '600',
+    border: '2px solid #000'
   },
 };

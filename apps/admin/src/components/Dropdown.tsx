@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 
 interface DropdownProps {
-    actions: string[]
-    onDelete?: () => void
+  actions: string[];
+  onDelete?: () => void;
 }
 
-function Dropdown({ actions, onDelete }: DropdownProps) {
+export default function Dropdown({ actions, onDelete }: DropdownProps) {
   const [open, setOpen]   = useState(false);
   const [pos, setPos]     = useState({ top: 0, left: 0 });
   const btnRef            = useRef<HTMLDivElement>(null);
@@ -66,8 +66,8 @@ function Dropdown({ actions, onDelete }: DropdownProps) {
                   action.toLowerCase().includes(w)
                 ) ? '#e24b4a' : '#333',
               }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#fff0e8')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+              onMouseEnter={e => e.currentTarget.style.background = '#fff0e8'}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
               onClick={() => handleAction(action)}
             >
               {action}
@@ -78,8 +78,6 @@ function Dropdown({ actions, onDelete }: DropdownProps) {
     </div>
   );
 }
-
-export default Dropdown;
 
 const s: Record<string, React.CSSProperties> = {
   btn:  {

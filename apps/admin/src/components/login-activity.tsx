@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import Dropdown from './dropdown';
 import Pagination from './pagination';
-import SearchBar from './search-bar';
+import SearchBar from './search-bar'; 
 import type { AdminData } from '../types';
 
-const ACTIONS = ['View Details', 'Revoke Session', 'Remove All Sessions', 'More Activity'];
+
+const ACTIONS = ['View Details', 'Block IP', 'More Activity'];
 
 const riskStyle: Record<string, React.CSSProperties> = {
   LOW:    { background: '#eaf3de', color: '#3B6D11' },
@@ -12,27 +13,28 @@ const riskStyle: Record<string, React.CSSProperties> = {
   MEDIUM: { background: '#FAEEDA', color: '#854F0B' },
 };
 
-interface SessionsProps {
-  data: AdminData[];
-  onDelete: (id: string) => void;
+interface LoginActivityProps {
+    data: AdminData[]
+    onDelete: (id: string) => void
 }
 
-export default function Sessions({ data, onDelete }: SessionsProps) {
+function LoginActivity({ data, onDelete }: LoginActivityProps) {
   const [page, setPage] = useState(1);
+
   const PER_PAGE   = 5;
   const totalPages = Math.ceil(data.length / PER_PAGE);
   const paged      = data.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   return (
     <div>
-      <div style={s.toolbar}>
+      <div style={{ marginBottom: '30px', marginTop: '70px' }}>
         <SearchBar />
       </div>
 
       <table style={s.table}>
         <thead>
           <tr style={s.thead}>
-            {['ID','NAME','ROLE','DEVICE','IP','LAST ACT.','RISK',''].map(h => (
+            {['ID','NAME','TIME','EVENT','IP','LAST ACT.','RISK',''].map(h => (
               <th key={h} style={s.th}>{h}</th>
             ))}
           </tr>
@@ -42,8 +44,8 @@ export default function Sessions({ data, onDelete }: SessionsProps) {
             <tr key={r.id} style={s.tr}>
               <td style={s.td}>{r.id}</td>
               <td style={s.td}>{r.name}</td>
-              <td style={s.td}>{r.role}</td>
-              <td style={s.td}>{r.device}</td>
+              <td style={s.td}>{r.time}</td>
+              <td style={s.td}>{r.event}</td>
               <td style={s.td}>{r.ip}</td>
               <td style={s.td}>{r.last}</td>
               <td style={s.td}>
@@ -65,12 +67,13 @@ export default function Sessions({ data, onDelete }: SessionsProps) {
   );
 }
 
+export default LoginActivity;
+
 const s: Record<string, React.CSSProperties> = {
-  toolbar: { marginBottom: '30px', marginTop: '70px'},
-  table:   { width: '100%', borderCollapse: 'collapse', fontSize: '16px', tableLayout: 'fixed' },
-  thead:   { background: '#e85d00' },
-  th:      { padding: '8px', textAlign: 'left', color: '#fff', fontWeight: '600', fontSize: '18px' },
-  tr:      { borderBottom: '1px solid #9f9f82' },
-  td:      { padding: '10px', color: '#333', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' , fontSize: '16px'},
-  badge:   { display: 'inline-block', padding: '2px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '600' },
+  table: { width: '100%', borderCollapse: 'collapse', fontSize: '16px', tableLayout: 'fixed' },
+  thead: { background: '#e85d00' },
+  th:    { padding: '8px', textAlign: 'left', color: '#fff', fontWeight: '600', fontSize: '18px' },
+  tr:    { borderBottom: '1px solid #9f9f82' },
+  td:    { padding: '10px', color: '#333', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '16px' },
+  badge: { display: 'inline-block', padding: '2px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '600' },
 };

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Background from './Background';
+import Background from './background';
 import logoPic from '../assets/Logo.png';  
 import closeEye from '../assets/closepassword.png';  
 import openEye  from '../assets/openpassword.png';   
 import type { SignupFormData } from '../types';
 
 interface SignupProps {
-    onSignup: (formData: SignupFormData) => void
-    onLoginSuccess: () => void
+  onSignup: (data: SignupFormData) => void;
+  onLoginSuccess: () => void;
 }
 
-function Signup({ onSignup, onLoginSuccess }: SignupProps) {
+export default function Signup({ onSignup, onLoginSuccess }: SignupProps) {
   const navigate = useNavigate();
   const [form, setForm] = useState<SignupFormData>({
     email: '',
@@ -26,7 +26,7 @@ function Signup({ onSignup, onLoginSuccess }: SignupProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError]             = useState('');
 
-  const handleChange = (field: keyof SignupFormData, value: string) => {
+  const handleChange = (field: string, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
   };
 
@@ -100,12 +100,12 @@ function Signup({ onSignup, onLoginSuccess }: SignupProps) {
 }
 
 interface FieldProps {
-    label: string
-    value: string
-    onChange: (value: string) => void
-    type?: string
-    showToggle?: boolean
-    onToggle?: () => void
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  type?: string;
+  showToggle?: boolean;
+  onToggle?: () => void;
 }
 
 function Field({ label, value, onChange, type = 'text', showToggle, onToggle }: FieldProps) {
@@ -150,5 +150,3 @@ const f: Record<string, React.CSSProperties> = {
   input:     { width: '100%', padding: '10px 14px', borderRadius: '8px', border: 'none', fontSize: '14px', background: '#fff', outline: 'none', boxSizing: 'border-box' },
   eye:       { position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' },
 };
-
-export default Signup;

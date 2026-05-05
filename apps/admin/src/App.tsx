@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import './App.css'
-import LoginPage from './LoginPage/LoginPage.tsx'
-import LandingPage from './LandingPage/LandingPage.tsx'
-import ProductPage from './Pages/ProductPage.tsx'
-import ProductEditPage from './Pages/EditPage/ProductEditPage.tsx'
-import CastPage from './Pages/CastPage.tsx'
-import CastEditPage from './Pages/EditPage/CastEditPage.tsx'
-import CustomerPage from './Pages/CustomerPage.tsx'
-import CustomerEditPage from './Pages/EditPage/CustomerEditPage.tsx'
-import Background from './Background/Background.tsx'
+import LoginPage from './pages/login-page.tsx'
+import LandingPage from './pages/landing-page.tsx'
+import ProductPage from './pages/product-page.tsx'
+import ProductEditPage from './pages/edit-page/product-edit-page.tsx'
+import CastPage from './pages/cast-page.tsx'
+import CastEditPage from './pages/edit-page/cast-edit-page.tsx'
+import CustomerPage from './pages/customer-page.tsx'
+import CustomerEditPage from './pages/edit-page/customer-edit-page.tsx'
+import Background from './components/background.tsx'
 import mockProfilePic from './assets/rigbyMockProfilePic.png'
-import AdminProfilePage from './Pages/AdminProfilePage.tsx'
-import UserBehaviorPage from './Pages/UserBehaviorPage.tsx';
-import PopularityPage from './Pages/PopularityPage.tsx';
-import ManagementDashboard from './components/ManagementDashboard.tsx';
-import Signup from './components/Signup.tsx';
-import SalesReportPage from './Pages/SalesReportPage.tsx'
+import AdminProfilePage from './pages/admin-profile-page.tsx'
+import UserBehaviorPage from './pages/user-behavior-page.tsx'
+import PopularityPage from './pages/popularity-page.tsx'
+import ManagementDashboard from './components/management-dashboard.tsx'
+import Signup from './components/signup.tsx'
+import SalesReportPage from './pages/sales-report-page.tsx'
 import type { Product, Cast, Customer, AdminData, SignupFormData, Episode, CastMember } from './types'
 
 const mkEps = (count: number, price: string): Episode[] =>

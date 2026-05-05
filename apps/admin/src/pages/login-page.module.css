@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped:wght@100..900&display=swap');
+
+body {
+    background-color: #000000;
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Sans Thai Looped', sans-serif;
+}
+
+.loginContainer {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    position: relative;
+    width: min(500px, 40vw);
+    height: auto;
+}
+
+.toSignup {
+  background: transparent;
+  color: #FF6700;
+  border: 5px solid #FF6700;        
+  border-radius: 25px;            
+  width: min(516px, 80vw);         
+  height: clamp(60px, 10vh, 116px); 
+  font-size: clamp(24px, 4vw, 48px);
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 12px;
+  letter-spacing: 1px;
+}
+
+.toSignup:hover {
+  background: #FF6700;
+  color: #fff;
+}
+
+.adminText {
+    color: #FFFFFF;
+    font-size: clamp(20px, 3vw, 40px);
+    margin-top: 0;
+    margin-bottom: 5%;
+    position: relative;
+    font-weight: 400;
+}
+
+.toLogin {
+    font-family: 'Noto Sans Thai Looped';
+    background-color: #FF6700;
+    color: #FFFFFF;
+    position: relative;
+    width: min(516px, 80vw);
+    height: clamp(60px, 10vh, 116px);
+    font-size: clamp(24px, 4vw, 48px);
+    border: 5px solid #FF6700;
+    border-radius: 25px;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 5;
+}
