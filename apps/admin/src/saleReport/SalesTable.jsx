@@ -1,0 +1,68 @@
+import { useState } from "react";
+import "./SalesTable.css";
+
+export default function SalesTable({ data, loading }) {
+  const [sortKey, setSortKey] = useState(null);
+  const [sortDir, setSortDir] = useState("asc");
+
+  const handleSort = (key) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
+
+  const sorted = [...data].sort((a, b) => {
+    if (!sortKey) return 0;
+    const va = a[sortKey], vb = b[sortKey];
+    const dir = sortDir === "asc" ? 1 : -1;
+    return typeof va === "string" ? va.localeCompare(vb) * dir : (va - vb) * dir;
+  });
+
+  return (
+    <div className="sales-table-wrap">
+      {loading ? (
+        <div className="table-loading">
+          <span className="spinner" />
+          Loading…
+        </div>
+      ) : (
+        <table className="sales-table">
+          <thead>
+            <tr>
+              {[
+                { key: "product", label: "Product" },
+                { key: "name", label: "NAME" },
+                { key: "quantity", label: "Quantity" },
+                { key: "revenue", label: "Total Revenue" },
+              ].map(({ key, label }) => (
+                <th
+                  key={key}
+                  onClick={() => handleSort(key)}
+                  className={key === "revenue" ? "align-right" : ""}
+                >
+                  {label}
+                  <span className="sort-icon">
+                    {sortKey === key ? (sortDir === "asc" ? " ▲" : " ▼") : " ▲"}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((row) => (
+              <tr key={row.product}>
+                <td className="cell-id">{row.product}</td>
+                <td>{row.name}</td>
+                <td className="cell-qty">{row.quantity.toLocaleString()}</td>
+                <td className="cell-rev">{row.revenue.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}

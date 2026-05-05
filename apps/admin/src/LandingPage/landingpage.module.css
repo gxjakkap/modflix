@@ -1,0 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped:wght@100..900&display=swap');
+
+body {
+    background-color: #000000;
+    font-family: 'Noto Sans Thai Looped', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.dashboardText {
+    width: fit-content;
+    height: fit-content;
+    font-size: clamp(24px, 3vw, 40px);
+    margin-top: 20px;
+    margin-bottom: 45px;
+    margin-left: 9%;
+    color: #FFFFFF;
+}
+
+.reportContainer {
+    width: 90%;
+    max-width: 1440px;
+    height: auto;
+    min-height: 670px;
+    background-color: #FFD7B5;
+    margin: 0 auto;
+    margin-bottom: 3%;
+    border-radius: 50px;
+    overflow: hidden;
+    padding-top: 1px;
+    padding-bottom: 3%;
+}
+
+.reportCardContainer {
+    margin-top: -2%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5%;
+    padding: 2% 3%;
+}
+
+.detailContainer {
+    width: 90%;
+    max-width: 900px;
+    height: auto;
+    min-height: 340px;
+    margin-left: 4%;
+    margin-top: 1%;
+    padding: 0;
+    display: flex;
+}
+
+.detailText {
+    width: fit-content;
+    padding-left: 4%;
+    padding-top: 1%;
+    color: #595959;
+    font-size: clamp(20px, 2.5vw, 32px);
+    margin: 0;
+    margin-bottom: 1%;
+}
+
+.graphContainer {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    min-height: 350px;
+    aspect-ratio: 16 / 7;
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 36px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.graph {
+    width: 100%;
+    height: 100%;
+    max-width: 480px;
+    margin: 0;
+}
+
+.topUserContainer {
+    margin-left: 15%;
+    margin-top: -5%;
+    width: 500px;
+    flex-shrink: 0;
+}
+
+.userContainer {
+    width: 90%;
+    max-width: 500px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    padding-left: 5%;
+    margin-bottom: 5%;
+    background-color: #FFFFFF;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.profilepic {
+    padding: 5%;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+}
+
+.username {
+     padding: 5%;
+     font-size: 24px;
+     font-weight: 400;
+     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

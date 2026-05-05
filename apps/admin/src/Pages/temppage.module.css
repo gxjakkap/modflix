@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped:wght@100..900&display=swap');
+
+body {
+    background-color: #000000;
+    font-family: 'Noto Sans Thai Looped', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.titleText {
+    width: fit-content;
+    height: fit-content;
+    font-size: clamp(24px, 3vw, 40px);
+    margin-top: 20px;
+    margin-bottom: 45px;
+    margin-left: 9%;
+    color: #FFFFFF;
+}
+
+.reportContainer {
+    width: 90%;
+    max-width: 1440px;
+    height: auto;
+    min-height: 670px;
+    background-color: #FFD7B5;
+    margin: 0 auto;
+    margin-bottom: 5%;
+    border-radius: 50px;
+    overflow: hidden;
+    padding: 20px 3%;
+    box-sizing: border-box;
+    padding: 20px 3% 40px 3%;
+}
+
+/* ── Top bar ── */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    height: 90%;
+    min-height: 70px;
+}
+
+.searchBox {
+    display: flex;
+    align-items: center;
+    background-color: #F5E6D8;
+    border-radius: 30px;
+    padding: 10px 20px;
+    gap: 10px;
+    width: 40%;
+    height: 90%;
+    min-height: 60px;
+}
+
+.searchIcon {
+    margin-right: 5%;
+}
+
+.searchbar {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: clamp(22px, 1.2vw, 24px);
+    color: #595959;
+    width: 100%;
+    font-family: inherit;
+}
+
+/* remove the default X button on search input */
+.searchbar::-webkit-search-cancel-button {
+    display: none;
+}
+
+.createBtn {
+    background-color: #FF6B00;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 28px;
+    font-size: clamp(28px, 1.2vw, 30px);
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    min-height: 70px;
+    width: 20%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.createBtn:hover {
+    background-color: #f59f61;
+    transform: scale(1.03);
+}
+
+/* ── Table wrapper (for border-radius + overflow) ── */
+.tableWrapper {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin: 0 1%;
+    margin-bottom: 10px
+}
+
+/* ── Table ── */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #FFFFFF;
+}
+
+.table thead tr {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 25px;
+}
+
+.table th {
+    padding: 16px 40px;
+    text-align: center;
+    font-size: clamp(22px, 1vw, 24px);
+    font-weight: 600;
+    color: #595959;
+    cursor: pointer;
+    user-select: none;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+}
+
+.table th:hover {
+    color: #FF6B00;
+}
+
+.table td {
+    padding: 14px 70px;
+    margin: 0;
+    font-size: clamp(20px, 1.2vw, 22px);
+    color: #333333;
+    border-bottom: 1px solid #F5EDE6;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #FFF5EE;
+}
+
+/* ── Cell variants ── */
+.codeCell {
+    color: #FF6B00 !important;
+    font-weight: 800;
+}
+
+.priceCell {
+    font-weight: 600;
+}
+
+.actionCell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+}
+
+/* ── Action buttons ── */
+.editBtn {
+    background-color: transparent;
+    border: 1.5px solid #595959;
+    border-radius: 35px;
+    padding: 5px 20px;
+    cursor: pointer;
+    font-size: clamp(14px, 1.2vw, 16px);
+    font-family: inherit;
+    color: #595959;
+    transition: all 0.2s ease;
+}
+
+.editBtn:hover {
+    background-color: #595959;
+    color: #FFFFFF;
+}
+
+.deleteBtn {
+    background-color: transparent;
+    border: 2px solid #FF4444;
+    border-radius: 35px;
+    padding: 5px 16px;
+    cursor: pointer;
+    font-size: clamp(14px, 1.2vw, 16px);
+    font-family: inherit;
+    color: #FF4444;
+    transition: all 0.2s ease;
+}
+
+.deleteBtn:hover {
+    background-color: #FF4444;
+    color: #FFFFFF;
+}
