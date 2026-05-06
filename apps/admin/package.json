@@ -11,6 +11,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@elysia/eden": "^1.4.10",
+		"@modflix/api-types": "workspace:*",
 		"react": "^19.2.5",
 		"react-dom": "^19.2.5",
 		"react-router-dom": "^7.14.2",
