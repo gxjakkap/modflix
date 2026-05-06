@@ -1,158 +1,152 @@
 import { useState } from 'react';
-import type { SignupFormData, AdminData } from '../types';
+import closeEye from '../assets/closepassword.png';
+import openEye  from '../assets/openpassword.png';
+import type { AdminData } from '../types';
 
 interface CreateAdminProps {
-    signupList?: SignupFormData[]
-    onAdd: (form: SignupFormData & { role: string }) => void
-    data?: AdminData[]
+  onAdd: (form: { fullname: string; email: string; username: string; password: string; role: string }) => void
+  data?: AdminData[]
 }
 
-function CreateAdmin({ signupList = [], onAdd, data = [] }: CreateAdminProps) {
-  const [search, setSearch]   = useState('');
-  const [found, setFound]     = useState<SignupFormData | null>(null);   
-  const [role, setRole]       = useState('');
-  const [error, setError]     = useState('');
-  const [notFound, setNotFound] = useState(false);
+function CreateAdmin({ onAdd, data = [] }: CreateAdminProps) {
+  const [form, setForm] = useState({
+    email:           '',
+    username:        '',
+    fullname:        '',
+    password:        '',
+    confirmPassword: '',
+    role:            '',
+  });
+  const [showPass, setShowPass]       = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [error, setError]             = useState('');
 
   const nextId = String(data.length + 1).padStart(4, '0');
 
-  const handleSearch = () => {
-    const result = signupList.find(
-      u => u.email.toLowerCase() === search.toLowerCase()
-    );
-    if (result) {
-      setFound(result);
-      setNotFound(false);
-      setError('');
-    } else {
-      setFound(null);
-      setNotFound(true);
-    }
+  const handleChange = (field: string, value: string) => {
+    setForm(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleAdd = () => {
-    if (!found) {
-      setError('กรุณาค้นหา email ก่อน');
+  const handleSubmit = () => {
+    if (!form.email || !form.username || !form.fullname || !form.password || !form.role) {
+      setError('กรุณากรอกข้อมูลให้ครบทุกช่อง');
       return;
     }
-    if (!role) {
-      setError('กรุณาเลือก Role');
+    if (form.password !== form.confirmPassword) {
+      setError('Password ไม่ตรงกัน');
       return;
     }
-    onAdd({ ...found, role });
-    setSearch('');
-    setFound(null);
-    setRole('');
+    onAdd(form);
+    setForm({ email: '', username: '', fullname: '', password: '', confirmPassword: '', role: '' });
     setError('');
   };
 
   return (
     <div>
-      {/* Toolbar */}
       <div style={s.toolbar}>
-        <button style={s.headerBtn}>ADD ADMIN</button>
+        <button style={s.headerBtn}>CREATE ADMIN</button>
       </div>
 
       <div style={s.body}>
-        {/* ซ้าย — Search */}
-        <div style={s.left}>
-          <div style={s.srch}>
-            <span style={{ fontSize: '18px', color: '#888' }}>&#128269;</span>
-            <input
-              style={s.srchInput}
-              placeholder="BY EMAIL"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            />
-          </div>
-          <button style={s.srchBtn} onClick={handleSearch}>ค้นหา</button>
-          {notFound && <div style={s.notFound}>ไม่พบ email นี้ในระบบ</div>}
-        </div>
+        <div style={s.userId}>USER ID: {nextId}</div>
 
-        {/* ขวา — ฟอร์มข้อมูล */}
-        <div style={s.right}>
-          <div style={s.userId}>USER ID: {nextId}</div>
+        {error && <div style={s.error}>{error}</div>}
 
-          <div style={s.grid}>
-            <InfoField label="FULL NAME" value={found ? found.fullname : ''} />
-            <InfoField label="PHONE"     value={found ? found.phone : ''} />
-            <InfoField label="BIRTHDATE" value={found ? found.birthdate : ''} />
-            <InfoField label="USERNAME"   value={found ? found.username  : ''} />
-            <InfoField label="EMAIL"      value={found ? found.email     : ''} />
-          </div>
-
-          {/* Role */}
-          <div style={s.roleWrap}>
-            <div style={s.roleLabel}>ROLE</div>
+        <div style={s.grid}>
+          <Field label="Email"    value={form.email}    onChange={v => handleChange('email', v)}    type="email" />
+          <Field label="Username" value={form.username} onChange={v => handleChange('username', v)} />
+          <Field label="Full Name" value={form.fullname} onChange={v => handleChange('fullname', v)} />
+          <Field
+            label="Password"
+            value={form.password}
+            onChange={v => handleChange('password', v)}
+            type={showPass ? 'text' : 'password'}
+            showToggle
+            onToggle={() => setShowPass(p => !p)}
+          />
+          <Field
+            label="Confirm Password"
+            value={form.confirmPassword}
+            onChange={v => handleChange('confirmPassword', v)}
+            type={showConfirm ? 'text' : 'password'}
+            showToggle
+            onToggle={() => setShowConfirm(p => !p)}
+          />
+          <div style={s.fieldWrap}>
+            <label style={s.label}>ROLE <span style={{ color: '#e85d00' }}>*</span></label>
             <select
               style={s.select}
-              value={role}
-              onChange={e => setRole(e.target.value)}
+              value={form.role}
+              onChange={e => handleChange('role', e.target.value)}
             >
-              <option value="">choose role</option>
+              <option value="">เลือก role</option>
               <option value="SUPER ADMIN">SUPER ADMIN</option>
               <option value="ADMIN">ADMIN</option>
             </select>
           </div>
+        </div>
 
-          {error && <div style={s.error}>{error}</div>}
-
-          {/* Add Button */}
-          <div style={{ textAlign: 'right', marginTop: '16px' }}>
-            <button style={s.addBtn} onClick={handleAdd}>ADD</button>
-          </div>
+        <div style={{ textAlign: 'right', marginTop: '16px' }}>
+          <button style={s.addBtn} onClick={handleSubmit}>ADD</button>
         </div>
       </div>
     </div>
   );
 }
 
-interface InfoFieldProps {
-    label: string
-    value: string
-    filled?: boolean
+interface FieldProps {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  type?: string
+  showToggle?: boolean
+  onToggle?: () => void
 }
 
-function InfoField({ label, value }: InfoFieldProps) {
+function Field({ label, value = '', onChange, type = 'text', showToggle, onToggle }: FieldProps) {
   return (
     <div style={f.wrap}>
-      <div style={f.label}>{label}</div>
-      <div style={f.value}>{value}</div>
+      <label style={f.label}>{label} <span style={{ color: '#e85d00' }}>*</span></label>
+      <div style={f.inputWrap}>
+        <input
+          style={f.input}
+          type={type}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+        />
+        {showToggle && (
+          <button style={f.eye} onClick={onToggle}>
+            <img
+              src={type === 'password' ? closeEye : openEye}
+              alt="toggle"
+              style={{ width: '20px', height: '20px' }}
+            />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
 
+export default CreateAdmin;
+
 const s: Record<string, React.CSSProperties> = {
-  toolbar:   { marginBottom: '20px', marginTop: '70px'},
+  toolbar:   { marginBottom: '20px', marginTop: '20px' },
   headerBtn: { background: '#e85d00', color: '#fff', border: 'none', borderRadius: '20px', padding: '10px 24px', fontSize: '22px', fontWeight: '700', cursor: 'pointer' },
-  body:      { display: 'flex', gap: '32px', alignItems: 'flex-start' },
-  left:      { display: 'flex', flexDirection: 'column', gap: '10px', width: '350px', flexShrink: 0 },
-  srch:      { display: 'flex', alignItems: 'center', gap: '8px', background: '#f5e6d5', border: '1.5px solid #d0a080', borderRadius: '24px', padding: '10px 16px' },
-  srchInput: { border: 'none', outline: 'none', fontSize: '14px', background: 'transparent', width: '100%', color: '#333' },
-  srchBtn:   { background: '#e85d00', color: '#fff', border: 'none', borderRadius: '20px', padding: '8px 20px', fontSize: '16px', fontWeight: '600', cursor: 'pointer', alignSelf: 'flex-start' },
-  notFound:  { color: '#c0392b', fontSize: '13px' },
-  right:     { flex: 1 },
+  body:      { padding: '8px' },
   userId:    { fontSize: '20px', fontWeight: '700', color: '#333', marginBottom: '20px' },
-  grid:      { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px', marginBottom: '16px' },
-  roleWrap:  { display: 'flex', flexDirection: 'column', gap: '6px', width: '50%' },
-  roleLabel: { fontSize: '18px', fontWeight: '700', color: '#333' },
+  grid:      { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px 24px' },
+  fieldWrap: { display: 'flex', flexDirection: 'column', gap: '4px' },
+  label:     { fontSize: '18px', fontWeight: '700', color: '#333' },
   select:    { padding: '8px 12px', borderRadius: '8px', border: '1px solid #ccc', fontSize: '18px', background: '#fff', outline: 'none' },
-  error:     { color: '#c0392b', fontSize: '13px', marginTop: '8px' },
+  error:     { color: '#c0392b', fontSize: '13px', marginBottom: '12px' },
   addBtn:    { background: '#e85d00', color: '#fff', border: 'none', borderRadius: '20px', padding: '10px 40px', fontSize: '20px', fontWeight: '700', cursor: 'pointer' },
 };
 
 const f: Record<string, React.CSSProperties> = {
-  wrap:  { display: 'flex', flexDirection: 'column', gap: '4px' },
-  label: { fontSize: '18px', fontWeight: '700', color: '#333' },
-  value: {
-    background: '#fff',
-    borderRadius: '8px',
-    padding: '8px 12px',
-    fontSize: '13px',
-    minHeight: '36px',
-    color: '#333'
-  },
+  wrap:      { display: 'flex', flexDirection: 'column', gap: '4px' },
+  label:     { fontSize: '18px', fontWeight: '700', color: '#333' },
+  inputWrap: { position: 'relative' },
+  input:     { width: '100%', padding: '8px 12px', borderRadius: '8px', border: '1px solid #ccc', fontSize: '16px', background: '#fff', outline: 'none', boxSizing: 'border-box' },
+  eye:       { position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer' },
 };
-
-export default CreateAdmin;

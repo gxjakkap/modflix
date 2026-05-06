@@ -3,10 +3,9 @@ import logoPic from '../assets/Logo.png'
 
 interface LoginPageProps {
     onLogin: () => void
-    onSignup: () => void
 }
 
-export default function LoginPage({ onLogin, onSignup }: LoginPageProps) {
+export default function LoginPage({ onLogin }: LoginPageProps) {
     return (
         <div className={styles.loginContainer}>
             <img src={logoPic} className={styles.logo} />
@@ -16,10 +15,6 @@ export default function LoginPage({ onLogin, onSignup }: LoginPageProps) {
                 onClick={onLogin}
             >
                 LOGIN
-            </button>
-
-            <button className={styles.toSignup} onClick={onSignup}>  
-                SIGNUP
             </button>
         </div>
     );
