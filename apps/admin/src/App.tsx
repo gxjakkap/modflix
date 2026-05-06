@@ -17,6 +17,7 @@ import PopularityPage from './pages/popularity-page.tsx'
 import ManagementDashboard from './components/management-dashboard.tsx'
 import SalesReportPage from './pages/sales-report-page.tsx'
 import type { Product, Cast, Customer, AdminData, Episode, CastMember } from './types'
+import LoginCredentialsPage from './pages/login-credentials-page.tsx'
 
 const mkEps = (count: number, price: string): Episode[] =>
     Array.from({ length: count }, (_, i) => ({
@@ -133,12 +134,17 @@ function App() {
                 <Route
                     path="/login"
                     element={
-                         <LoginRoute
-                            isLoggedIn={isLoggedIn}
-                            onLogin={() => setIsLoggedIn(true)}
-                         />
+                        isLoggedIn
+                        ? <Navigate to="/" replace />
+                        : <LoginPage onLogin={() => setIsLoggedIn(true)} />
                     }
                 />
+
+                <Route path="/login/credentials" element={
+                    isLoggedIn
+                        ? <Navigate to="/" replace />
+                        : <LoginCredentialsPage onLogin={() => setIsLoggedIn(true)} />
+                } />
                 <Route path="/"        element={isLoggedIn ? <LandingPage {...commonProps} /> : <Navigate to="/login" replace />} />
 
                 <Route path="/products"           element={isLoggedIn ? <ProductPage  {...commonProps} data={products} /> : <Navigate to="/login" replace />} />

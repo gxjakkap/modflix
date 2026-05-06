@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Dropdown from './dropdown';
-import Pagination from './pagination';
+import Dropdown from './Dropdown';
+import Pagination from './Pagination';
 import SearchBar from './search-bar'; 
 import type { AdminData } from '../types';
 
@@ -27,7 +27,7 @@ function LoginActivity({ data, onDelete }: LoginActivityProps) {
 
   return (
     <div>
-      <div style={{ marginBottom: '30px', marginTop: '70px' }}>
+      <div style={{ marginBottom: '30px', marginTop: '30px' }}>
         <SearchBar />
       </div>
 

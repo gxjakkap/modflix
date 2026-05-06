@@ -8,7 +8,6 @@ import Navbar from "./navbar";
 import mockProfilePic from '../assets/rigbyMockProfilePic.png'
 import type { AdminData } from '../types';
 
-// ✅ ย้าย INITIAL_DATA มาไว้ที่นี่
 const INITIAL_DATA: AdminData[] = [
   { id: '0001', name: 'KIM MINJEONG', role: 'SUPER ADMIN', login: '12/12/24 01:03 PM', email: 'winrina@gmail.com', device: 'Mac',     ip: '203.0.113.1', last: '1 min ago',  risk: 'LOW',    time: 'MAR 23, 10:15', event: 'LOGIN' },
   { id: '0002', name: 'NUCH',         role: 'ADMIN',       login: '12/12/24 01:03 PM', email: 'winrina@gmail.com', device: 'Phone',   ip: '101.51.22.9', last: '5 min ago',  risk: 'HIGH',   time: 'MAR 23, 10:15', event: 'LOGIN' },
@@ -18,14 +17,13 @@ const INITIAL_DATA: AdminData[] = [
   { id: '0006', name: 'NINGNING',     role: 'ADMIN',       login: '12/12/24 01:03 PM', email: 'winrina@gmail.com', device: 'Mac',     ip: '101.51.22.9', last: '5 min ago',  risk: 'MEDIUM', time: 'MAR 23, 10:15', event: 'LOGIN' },
 ];
 
-// ✅ interface เหลือแค่ pic และ username
 interface ManagementDashboardProps {
   pic: string
   username: string
 }
 
 function ManagementDashboard({ pic, username }: ManagementDashboardProps) {
-  // ✅ state และ handlers อยู่ใน component
+  
   const [data, setData] = useState<AdminData[]>(INITIAL_DATA);
   const navigate        = useNavigate();
 
@@ -58,7 +56,7 @@ function ManagementDashboard({ pic, username }: ManagementDashboardProps) {
   return (
     <>
       <Navbar pic={pic || mockProfilePic} username={username || 'LetmeuseKase'} />
-      <h1 style={s.Management}>Management</h1>
+      <h1 style={{ color: 'white', marginLeft: '9%', marginTop: '20px', fontSize: '40px',marginBottom: 45, }}>Management</h1>
       <div style={s.dash}>
         <div style={s.tabs}>
           <NavLink to="/management/admin"          style={({ isActive }) => isActive ? s.tabOn : s.tab}>ADMIN ACCOUNTS</NavLink>
@@ -82,14 +80,14 @@ function ManagementDashboard({ pic, username }: ManagementDashboardProps) {
 const s: Record<string, React.CSSProperties> = {
   dash: {
     background: 'transparent',
-    minHeight: '100vh',
+    height: '100vh',
     fontFamily: "'Noto Sans Thai Looped', sans-serif",
     position: 'relative',
     width: '90%',
     maxWidth: '1440px',
     marginLeft: 'auto',
     marginRight: 'auto',
-    marginBottom: '5%',
+    overflow: 'hidden',
   },
   tabs: {
     display: 'flex',
@@ -129,17 +127,12 @@ const s: Record<string, React.CSSProperties> = {
   card: {
     background: '#FFD7B5',
     borderRadius: '0px 0px 50px 50px',
-    minHeight: '670px',
+    minHeight: '550px',
     padding: '20px 3% 40px 3%',
     boxSizing: 'border-box',
     position: 'relative',
     zIndex: 1,
     overflow: 'hidden',
-  },
-  Management: {
-    color: '#fff',
-    margin: '20px 0px 45px 200px',
-    fontSize: '40px',
   },
 };
 

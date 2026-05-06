@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Dropdown from './dropdown';
-import Pagination from './pagination';
+import Dropdown from './Dropdown';
+import Pagination from './Pagination';
 import SearchBar from './search-bar';
 import type { AdminData } from '../types';
 
@@ -66,7 +66,7 @@ export default function Sessions({ data, onDelete }: SessionsProps) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  toolbar: { marginBottom: '30px', marginTop: '70px'},
+  toolbar: { marginBottom: '30px', marginTop: '30px'},
   table:   { width: '100%', borderCollapse: 'collapse', fontSize: '16px', tableLayout: 'fixed' },
   thead:   { background: '#e85d00' },
   th:      { padding: '8px', textAlign: 'left', color: '#fff', fontWeight: '600', fontSize: '18px' },

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Dropdown from './dropdown';
-import Pagination from './pagination';
+import Dropdown from './Dropdown';
+import Pagination from './Pagination';
 import SearchBar from './search-bar'; 
 import type { AdminData } from '../types';
 
@@ -80,7 +80,7 @@ const Th = ({ children, w }: ThProps) => (
 export default AdminAccounts;
 
 const s: Record<string, React.CSSProperties> = {
-  toolbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', marginTop: '70px'},
+  toolbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', marginTop: '30px'},
   btn:     { background: '#e85d00', color: '#fff', border: 'none', borderRadius: '20px', padding: '7px 14px', fontSize: '18px', fontWeight: '600', cursor: 'pointer' },
   table: { width: '100%', borderCollapse: 'collapse', fontSize: '16px' }, 
   th:    { padding: '10px', textAlign: 'left', color: '#fff', fontWeight: '600', fontSize: '18px' }, 
