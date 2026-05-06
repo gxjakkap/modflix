@@ -1,150 +1,155 @@
 .headerContainer {
-    width: 100%;
-    height: auto;
-    position: relative;
-    display: inline-flex;
-    justify-content: space-between;
-    text-align: center;
-    align-items: center;
-    box-sizing: border-box; 
-    padding-right: 10%;
-    margin-top: 45px;
-    flex-wrap: nowrap;
-    gap: 0;
+	width: 100%;
+	height: auto;
+	position: relative;
+	display: inline-flex;
+	justify-content: space-between;
+	text-align: center;
+	align-items: center;
+	box-sizing: border-box;
+	padding-right: 8%;
+	margin-top: 45px;
+	flex-wrap: nowrap;
+	gap: 0;
 }
 
 .navbarContainer {
-    width: 80%;
-    max-width: 100%;
-    height: auto;
-    display: inline-flex;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
+	width: 80%;
+	max-width: 100%;
+	height: auto;
+	display: inline-flex;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
 }
 
 .navbarText {
-    color: #FFFFFF;
-    display: flex;
-    gap: clamp(15px, 3vw, 40px);
-    align-items: center;
-    justify-content: center;
+	color: #ffffff;
+	display: flex;
+	gap: clamp(15px, 3vw, 40px);
+	align-items: center;
+	justify-content: center;
 }
 
 /* Reset ALL NavLink anchor defaults */
 .navbarText a {
-    text-decoration: none;
-    color: #FFFFFF;
-    font-weight: 400;
-    font-size: clamp(18px, 2vw, 30px);
-    cursor: pointer;
-    transition: font-size 0.2s ease;
+	text-decoration: none;
+	color: #ffffff;
+	font-weight: 400;
+	font-size: clamp(18px, 2vw, 30px);
+	cursor: pointer;
+	transition: font-size 0.2s ease;
 }
 
 .navbarText a:hover {
-    font-size: clamp(20px, 2.2vw, 32px);
+	font-size: clamp(20px, 2.2vw, 32px);
 }
 
 /* Active page highlight */
 .active {
-    text-decoration: none !important;
-    /*color: #FF6B00 !important;  orange accent matching your theme */
-    font-weight: 600 !important;
-    font-size: clamp(18px, 2vw, 30px);
+	text-decoration: none !important;
+	/*color: #FF6B00 !important;  orange accent matching your theme */
+	font-weight: 600 !important;
+	font-size: clamp(18px, 2vw, 30px);
 }
 
 .active:hover {
-    font-size: clamp(20px, 2.2vw, 32px);
+	font-size: clamp(20px, 2.2vw, 32px);
 }
 
 /* Keep individual class hooks in case you need per-item overrides */
-.home, .product, .cast, .customer, .reports, .management {
-    text-decoration: none;
-    color: #FFFFFF;
+.home,
+.product,
+.cast,
+.customer,
+.reports,
+.management {
+	text-decoration: none;
+	color: #ffffff;
 }
 
 .reportList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    position: relative;
-    cursor: pointer;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	position: relative;
+	cursor: pointer;
 }
 
 .dropdown {
-    position: absolute;
-    display: none;
-    left: 0%;
-    min-width: 120px;
+	position: absolute;
+	display: none;
+	left: 0%;
+	min-width: 120px;
 }
 
 .reportList:hover .dropdown {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 /* Fixed: was ul, should be a for NavLink */
 .dropdown a {
-    font-size: clamp(14px, 1.5vw, 20px);
-    padding: 5px;
-    margin: 5px;
-    cursor: pointer;
-    list-style: none;
-    text-align: left;
-    transition: font-size 0.2s ease;
-    background-color: #000000;
-    text-decoration: none;
-    border-radius: 15px;
-    color: #FFFFFF;
-    display: block;
+	font-size: clamp(14px, 1.5vw, 20px);
+	padding: 5px;
+	margin: 5px;
+	cursor: pointer;
+	list-style: none;
+	text-align: left;
+	transition: font-size 0.2s ease;
+	background-color: #000000;
+	text-decoration: none;
+	border-radius: 15px;
+	color: #ffffff;
+	display: block;
 }
 
 .dropdown a:hover {
-    font-size: clamp(16px, 1.7vw, 22px);
-    padding: 10px;
-    border: 2px solid #414141;
-    border-radius: 15px;
-    background-color: #000000;
+	font-size: clamp(16px, 1.7vw, 22px);
+	padding: 10px;
+	border: 2px solid #414141;
+	border-radius: 15px;
+	background-color: #000000;
 }
 
 .logo {
-    margin-left: 10%;
-    margin-right: 3%;
-    width: clamp(80px, 10vw, 147.56px);
-    height: auto;
+	margin-left: 10%;
+	margin-right: 3%;
+	width: clamp(80px, 10vw, 147.56px);
+	height: auto;
 }
 
 .navbarProfile {
-    height: 60px;
-    margin-left: 3%;
-    position: static;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    min-width: 0;
-    overflow: visible;
-    transition: scale 200ms ease;
-    text-decoration: none;
-    color: inherit;
+	height: 60px;
+	margin-left: 3%;
+	position: static;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	min-width: 0;
+	overflow: visible;
+	transition: scale 200ms ease;
+	text-decoration: none;
+	color: inherit;
 }
 
 .profilePic {
-    width: clamp(40px, 5vw, 60px);
-    height: clamp(40px, 5vw, 60px);
-    border-radius: 50%;
-    flex-shrink: 0;
+	width: clamp(40px, 5vw, 60px);
+	height: clamp(40px, 5vw, 60px);
+	border-radius: 50%;
+	flex-shrink: 0;
 }
 
 .navbarProfile:hover {
-    scale: 1.1;
+	scale: 1.1;
 }
 
 .username {
-    color: #FFFFFF;
-    font-weight: 400;
-    font-size: clamp(16px, 1.8vw, 24px);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    min-width: 150px;
+	color: #ffffff;
+	font-weight: 400;
+	font-size: clamp(16px, 1.8vw, 24px);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	min-width: 150px;
 }
