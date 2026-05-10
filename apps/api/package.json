@@ -6,8 +6,12 @@
 		"dev": "bun run --watch src/index.ts"
 	},
 	"dependencies": {
+		"@bogeychan/elysia-logger": "^0.1.10",
+		"@elysiajs/cors": "^1.4.2",
 		"@modflix/auth": "workspace:*",
+		"@modflix/db": "workspace:*",
 		"@modflix/env": "workspace:*",
+		"drizzle-typebox": "^0.3.3",
 		"elysia": "latest"
 	},
 	"devDependencies": {
