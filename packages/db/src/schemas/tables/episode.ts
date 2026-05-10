@@ -11,7 +11,7 @@ export const episode = pgTable("episode", {
 	name: text("name").notNull(),
 	description: text("description"),
 	releaseDate: date("release_date").notNull(),
-	addedDate: timestamp("added_date").notNull().defaultNow(),
+	addedDate: timestamp("added_date", { withTimezone: true }).notNull().defaultNow(),
 	mediaId: uuid("media_id")
 		.notNull()
 		.references(() => media.id),

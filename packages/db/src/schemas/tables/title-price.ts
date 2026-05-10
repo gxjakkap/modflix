@@ -7,8 +7,8 @@ export const titlePrice = pgTable("title_price", {
 		.notNull()
 		.references(() => title.id),
 	price: numeric("price").notNull(),
-	currenct: text("currency").notNull().default("THB"),
-	addedDate: timestamp("added_date").notNull().defaultNow(),
-	startDate: timestamp("start_date").notNull(),
-	expiresDate: timestamp("expires_date"),
+	currency: text("currency").notNull().default("THB"),
+	addedDate: timestamp("added_date", { withTimezone: true }).notNull().defaultNow(),
+	startDate: timestamp("start_date", { withTimezone: true }).notNull(),
+	expiresDate: timestamp("expires_date", { withTimezone: true }),
 })

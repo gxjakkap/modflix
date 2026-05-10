@@ -8,5 +8,5 @@ export const season = pgTable("season", {
 		.notNull()
 		.references(() => title.id), // TBA to erd
 	releaseDate: date("release_date").notNull(),
-	addedDate: timestamp("added_date").notNull().defaultNow(),
+	addedDate: timestamp("added_date", { withTimezone: true }).notNull().defaultNow(),
 })

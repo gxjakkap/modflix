@@ -1,5 +1,6 @@
 import { integer, pgTable, text, uuid } from "drizzle-orm/pg-core"
 import { file } from "./file"
+import { user } from "./user"
 
 export const media = pgTable("media", {
 	id: uuid("id").primaryKey().defaultRandom(),
@@ -7,5 +8,7 @@ export const media = pgTable("media", {
 		.notNull()
 		.references(() => file.id),
 	duration: integer("duration").notNull(),
-	createdBy: text("created_by").notNull(),
+	createdBy: text("created_by")
+		.notNull()
+		.references(() => user.id),
 })

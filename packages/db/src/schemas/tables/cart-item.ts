@@ -15,7 +15,7 @@ export const cartItem = pgTable(
 		priceId: uuid("price_id")
 			.notNull()
 			.references(() => titlePrice.id),
-		addedAt: timestamp("added_at").notNull().defaultNow(),
+		addedAt: timestamp("added_at", { withTimezone: true }).notNull().defaultNow(),
 	},
-	(t) => [primaryKey({ columns: [t.cartId, t.titleId] })],
+	(table) => [primaryKey({ columns: [table.cartId, table.titleId] })],
 )

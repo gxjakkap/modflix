@@ -1,11 +1,17 @@
-import { pgTable, primaryKey, timestamp, uuid } from "drizzle-orm/pg-core"
+import { pgTable, primaryKey, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import { title } from "./title"
+import { user } from "./user"
 
 export const userLibrary = pgTable(
 	"user_library",
 	{
-		userId: uuid("user_id").notNull(),
-		titleId: uuid("title_id").notNull(),
-		addedDate: timestamp("added_date").notNull().defaultNow(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id),
+		titleId: uuid("title_id")
+			.notNull()
+			.references(() => title.id),
+		addedDate: timestamp("added_date", { withTimezone: true }).notNull().defaultNow(),
 	},
 	(table) => [primaryKey({ columns: [table.userId, table.titleId] })],
 )
