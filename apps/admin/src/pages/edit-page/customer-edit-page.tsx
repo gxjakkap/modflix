@@ -1,125 +1,162 @@
-import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import Navbar from '../../components/navbar'
-import styles from './customer-edit-page.module.css'
-import type { Customer } from '../../types'
-
-const COUNTRIES = ['Thailand', 'Korea', 'Japan', 'USA', 'UK', 'China', 'Singapore', 'Australia']
+import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import Navbar from "../../components/navbar"
+import { api } from "../../lib/api"
+import styles from "./customer-edit-page.module.css"
 
 interface CustomerEditPageProps {
-    pic?: string
-    username?: string
-    customers?: Customer[]
-    onSave: (customer: Customer) => void
+	pic?: string
+	username?: string
 }
 
-export default function CustomerEditPage({ pic, username, customers = [], onSave }: CustomerEditPageProps) {
-    const { code } = useParams<{ code: string }>()
-    const navigate = useNavigate()
-    const original = customers.find(c => c.code === code)
+interface CustomerEdit {
+	id: string
+	name: string
+	username: string
+	email: string
+}
 
-    const [draft, setDraft]   = useState<Customer | null>(original ? { ...original } : null)
-    const [errors, setErrors] = useState<Record<string, string | null>>({})
-    const [saved, setSaved]   = useState(false)
+export default function CustomerEditPage({ pic, username }: CustomerEditPageProps) {
+	const { id } = useParams<{ id: string }>()
+	const navigate = useNavigate()
+	const [draft, setDraft] = useState<CustomerEdit | null>(null)
+	const [errors, setErrors] = useState<Record<string, string | null>>({})
+	const [saved, setSaved] = useState(false)
+	const [saving, setSaving] = useState(false)
 
-    if (!original || !draft) {
-        return (
-            <>
-                <Navbar pic={pic} username={username} />
-                <div className={styles.notFound}>
-                    <p>Customer <strong>{code}</strong> not found.</p>
-                    <button className={styles.backBtn} onClick={() => navigate('/customers')}>← Back</button>
-                </div>
-            </>
-        )
-    }
+	if (!id) {
+		return (
+			<>
+				<Navbar pic={pic} username={username} />
+				<div className={styles.notFound}>
+					<p>Missing id params.</p>
+					<button className={styles.backBtn} onClick={() => navigate("/customers")}>
+						← Back
+					</button>
+				</div>
+			</>
+		)
+	}
 
-    const handleChange = (field: string, value: string) => {
-        setErrors(prev => ({ ...prev, [field]: null }))
-        setDraft(prev => prev ? ({ ...prev, [field]: value }) : prev)
-    }
+	useEffect(() => {
+		api.admin.customers["get-customer-by-id"]
+			.get({
+				query: {
+					id: id,
+				},
+			})
+			.then((res) => {
+				if (res.status !== 200 || !res.data) return
+				setDraft(res.data)
+			})
+	}, [])
 
-    const validate = () => {
-        const e: Record<string, string> = {}
-        if (!draft.name?.trim())  e.name  = 'Required'
-        if (!draft.phone?.trim()) e.phone = 'Required'
-        if (!draft.email?.trim() || !draft.email.includes('@')) e.email = 'Valid email required'
-        setErrors(e)
-        return Object.keys(e).length === 0
-    }
+	if (!draft) {
+		return (
+			<>
+				<Navbar pic={pic} username={username} />
+				<div className={styles.notFound}>
+					<p>
+						Customer with id <strong>{id}</strong> not found.
+					</p>
+					<button className={styles.backBtn} onClick={() => navigate("/customers")}>
+						← Back
+					</button>
+				</div>
+			</>
+		)
+	}
 
-    const handleSave = () => {
-        if (!validate()) return
-        onSave(draft)
-        setSaved(true)
-        setTimeout(() => navigate('/customers'), 800)
-    }
+	const handleChange = (field: string, value: string) => {
+		setErrors((prev) => ({ ...prev, [field]: null }))
+		setDraft((prev) => (prev ? { ...prev, [field]: value } : prev))
+	}
 
-    return (
-        <>
-            <Navbar pic={pic} username={username} />
-            <h1 className={styles.pageTitle}>Edit Customers</h1>
+	const validate = () => {
+		const e: Record<string, string> = {}
+		if (!draft.name?.trim()) e.name = "Required"
+		if (!draft.username?.trim()) e.username = "Required"
+		setErrors(e)
+		return Object.keys(e).length === 0
+	}
 
-            <div className={styles.pageWrapper}>
-                <div className={styles.topSection}>
+	const handleSave = () => {
+		if (!validate()) return
+		setSaving(true)
+		api.admin.customers["update-customer"]
+			.patch({
+				userId: draft.id,
+				fullName: draft.name,
+				username: draft.username,
+			})
+			.then((res) => {
+				if (res.status === 200) {
+					setSaving(false)
+					setSaved(true)
+					setTimeout(() => navigate("/customers"), 800)
+				} else {
+					setSaving(false)
+					window.alert(`Error: [${res.error?.status}] ${res.error?.value}`)
+				}
+			})
+	}
 
-                    <div className={styles.fieldsSection}>
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>CODE <span className={styles.req}>*</span></label>
-                            <div className={styles.fieldValue}>{draft.code}</div>
-                        </div>
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>NAME <span className={styles.req}>*</span></label>
-                            <div className={styles.inputWrap}>
-                                <input className={`${styles.fieldInput} ${errors.name ? styles.inputErr : ''}`} value={draft.name} onChange={e => handleChange('name', e.target.value)} />
-                                {errors.name && <span className={styles.errMsg}>{errors.name}</span>}
-                            </div>
-                        </div>
-                        <div className={styles.fieldRow}>
-                            <label className={`${styles.fieldLabel} ${styles.phoneLabel}`}>PHONE <span className={styles.req}>*</span></label>
-                            <div className={styles.inputWrap}>
-                                <input className={`${styles.fieldInput} ${errors.phone ? styles.inputErr : ''}`} value={draft.phone} onChange={e => handleChange('phone', e.target.value)} />
-                                {errors.phone && <span className={styles.errMsg}>{errors.phone}</span>}
-                            </div>
-                        </div>
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>EMAIL <span className={styles.req}>*</span></label>
-                            <div className={styles.inputWrap}>
-                                <input className={`${styles.fieldInput} ${errors.email ? styles.inputErr : ''}`} value={draft.email} onChange={e => handleChange('email', e.target.value)} />
-                                {errors.email && <span className={styles.errMsg}>{errors.email}</span>}
-                            </div>
-                        </div>
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>COUNTRY</label>
-                            <select className={styles.fieldSelect} value={draft.country || ''} onChange={e => handleChange('country', e.target.value)}>
-                                <option value="">—</option>
-                                {COUNTRIES.map(c => <option key={c}>{c}</option>)}
-                            </select>
-                        </div>
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>BOD</label>
-                            <input className={styles.fieldInput} value={draft.dob || ''} placeholder="DD/MM/YYYY" onChange={e => handleChange('dob', e.target.value)} />
-                        </div>
-                    </div>
+	return (
+		<>
+			<Navbar pic={pic} username={username} />
+			<h1 className={styles.pageTitle}>Edit Customers</h1>
 
-                    <div className={styles.imagePlaceholder}>
-                        <div className={styles.imageIcon}>
-                            <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.2">
-                                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <path d="M21 15l-5-5L5 21"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
+			<div className={styles.pageWrapper}>
+				<div className={styles.topSection}>
+					<div className={styles.fieldsSection}>
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>ID/EMAIL</label>
+							<div>
+								{draft.id} / {draft.email}
+							</div>
+						</div>
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>
+								USERNAME <span className={styles.req}>*</span>
+							</label>
+							<div className={styles.inputWrap}>
+								<input
+									className={`${styles.fieldInput} ${errors.username ? styles.inputErr : ""}`}
+									value={draft.username}
+									onChange={(e) => handleChange("username", e.target.value)}
+								/>
+								{errors.username && <span className={styles.errMsg}>{errors.username}</span>}
+							</div>
+						</div>
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>
+								NAME <span className={styles.req}>*</span>
+							</label>
+							<div className={styles.inputWrap}>
+								<input
+									className={`${styles.fieldInput} ${errors.name ? styles.inputErr : ""}`}
+									value={draft.name}
+									onChange={(e) => handleChange("name", e.target.value)}
+								/>
+								{errors.name && <span className={styles.errMsg}>{errors.name}</span>}
+							</div>
+						</div>
+					</div>
+				</div>
 
-                <div className={styles.bottomBar}>
-                    <button className={styles.backBtn} onClick={() => navigate('/customers')}>← Back</button>
-                    <button className={`${styles.saveBtn} ${saved ? styles.savedBtn : ''}`} onClick={handleSave} disabled={saved}>
-                        {saved ? '✓ SAVED!' : 'SAVE CHANGES'}
-                    </button>
-                </div>
-            </div>
-        </>
-    )
+				<div className={styles.bottomBar}>
+					<button className={styles.backBtn} onClick={() => navigate("/customers")}>
+						← Back
+					</button>
+					<button
+						className={`${styles.saveBtn} ${saved ? styles.savedBtn : ""}`}
+						onClick={handleSave}
+						disabled={saved || saving}
+					>
+						{saved ? "✓ SAVED!" : saving ? "SAVING..." : "SAVE CHANGES"}
+					</button>
+				</div>
+			</div>
+		</>
+	)
 }

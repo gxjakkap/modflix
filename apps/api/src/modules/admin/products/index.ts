@@ -34,6 +34,7 @@ export const productsModule = new Elysia({ prefix: "/products" }).get(
 		query: getProductsModel.query,
 		response: {
 			200: getProductsModel.response,
+			404: ErrorModel,
 			400: ErrorModel,
 			500: ErrorModel,
 		},

@@ -4,7 +4,7 @@ import Navbar from "../components/navbar"
 
 interface AdminProfilePageProps {
 	user: ClientSideUser
-	onSave?: () => void
+	onSave: () => void
 }
 
 function AdminProfilePage({ user, onSave }: AdminProfilePageProps) {

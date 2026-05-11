@@ -87,10 +87,11 @@
 /* ── Table wrapper (for border-radius + overflow) ── */
 .tableWrapper {
     border-radius: 20px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     margin: 0 1%;
-    margin-bottom: 10px
+    margin-bottom: 10px;
 }
 
 /* ── Table ── */
@@ -123,8 +124,9 @@
 }
 
 .table td {
-    padding: 14px 70px;
+    padding: 14px 40px;
     margin: 0;
+    text-align: center;
     font-size: clamp(20px, 1.2vw, 22px);
     color: #333333;
     border-bottom: 1px solid #F5EDE6;

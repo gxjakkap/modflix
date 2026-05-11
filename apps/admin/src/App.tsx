@@ -20,7 +20,7 @@ import PopularityPage from "./pages/popularity-page.tsx"
 import ProductPage from "./pages/product-page.tsx"
 import SalesReportPage from "./pages/sales-report-page.tsx"
 import UserBehaviorPage from "./pages/user-behavior-page.tsx"
-import type { Cast, CastMember, Customer, Episode, Product } from "./types"
+import type { Cast, CastMember, Episode, Product } from "./types"
 
 const mkEps = (count: number, price: string): Episode[] =>
 	Array.from({ length: count }, (_, i) => ({
@@ -223,23 +223,10 @@ const INITIAL_CASTS: Cast[] = [
 	},
 ]
 
-const INITIAL_CUSTOMERS: Customer[] = [
-	{ code: "CU01", name: "Vera", phone: "0123456789", email: "wow@gmail.com", country: "Thailand", dob: "01/01/2549" },
-	{ code: "CU02", name: "Ttime", phone: "0123456789", email: "wow1@gmail.com", country: "Thailand", dob: "02/02/2540" },
-	{ code: "CU03", name: "Jungkook", phone: "0123456789", email: "wow2@gmail.com", country: "Korea", dob: "01/09/2540" },
-	{ code: "CU04", name: "Namjoon", phone: "0123456789", email: "wow3@gmail.com", country: "Korea", dob: "12/09/2537" },
-	{ code: "CU05", name: "Jimin", phone: "0123456789", email: "wow4@gmail.com", country: "Korea", dob: "13/10/2538" },
-	{ code: "CU06", name: "J-Hope", phone: "0123456789", email: "wow5@gmail.com", country: "Korea", dob: "18/02/2537" },
-	{ code: "CU07", name: "V", phone: "0123456789", email: "wow6@gmail.com", country: "Korea", dob: "30/12/2538" },
-	{ code: "CU08", name: "SUGA", phone: "0123456789", email: "wow7@gmail.com", country: "Korea", dob: "09/03/2537" },
-	{ code: "CU09", name: "Jin", phone: "0123456789", email: "wow8@gmail.com", country: "Korea", dob: "04/12/2535" },
-]
-
 function App() {
 	const { data: session, isPending, refetch } = authClient.useSession()
 	const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS)
 	const [casts, setCasts] = useState<Cast[]>(INITIAL_CASTS)
-	const [customers, setCustomers] = useState<Customer[]>(INITIAL_CUSTOMERS)
 
 	const [user, setUser] = useState<ClientSideUser | null>(null)
 
@@ -264,8 +251,6 @@ function App() {
 	const handleSaveProduct = (updated: Product) =>
 		setProducts((prev) => prev.map((p) => (p.code === updated.code ? updated : p)))
 	const handleSaveCast = (updated: Cast) => setCasts((prev) => prev.map((c) => (c.code === updated.code ? updated : c)))
-	const handleSaveCustomer = (updated: Customer) =>
-		setCustomers((prev) => prev.map((c) => (c.code === updated.code ? updated : c)))
 
 	const commonProps = {
 		user,
@@ -346,23 +331,15 @@ function App() {
 
 				<Route
 					path="/admin-profile"
-					element={
-						user ? <AdminProfilePage user={user} onSave={() => refetch()} /> : <Navigate to="/login" replace />
-					}
+					element={user ? <AdminProfilePage user={user} onSave={() => refetch()} /> : <Navigate to="/login" replace />}
 				/>
 				<Route
 					path="/customers"
-					element={user ? <CustomerPage {...commonProps} data={customers} /> : <Navigate to="/login" replace />}
+					element={user ? <CustomerPage {...commonProps} /> : <Navigate to="/login" replace />}
 				/>
 				<Route
-					path="/customers/edit/:code"
-					element={
-						user ? (
-							<CustomerEditPage {...commonProps} customers={customers} onSave={handleSaveCustomer} />
-						) : (
-							<Navigate to="/login" replace />
-						)
-					}
+					path="/customers/edit/:id"
+					element={user ? <CustomerEditPage {...commonProps} /> : <Navigate to="/login" replace />}
 				/>
 
 				<Route

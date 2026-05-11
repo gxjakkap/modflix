@@ -25,7 +25,7 @@ export default function CastPage({ pic, username, data = [] }: CastPageProps) {
             username={username}
             title="Cast"
             columns={columns}
-            data={display as unknown as Record<string, unknown>[]}
+            data={display}
             onEdit={(row)   => navigate(`/cast/edit/${row.code}`)}
             onDelete={(row) => console.log('Delete', row)}
             onCreate={()    => console.log('Create new cast')}

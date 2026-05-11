@@ -1,5 +1,5 @@
 import Elysia from "elysia"
-import { betterAuth } from "../../auth"
+import { ErrorModel } from "@/schemas/error"
 import {
 	banAdminAccountModel,
 	createAdminAccountModel,
@@ -7,13 +7,7 @@ import {
 	unbanAdminAccountModel,
 	updateAdminProfileModel,
 } from "./model"
-import {
-	banAdminAccount,
-	createAdminAccount,
-	getAdminAccounts,
-	unbanAdminAccount,
-	updateAdminProfile,
-} from "./service"
+import { banAdminAccount, createAdminAccount, getAdminAccounts, unbanAdminAccount, updateAdminProfile } from "./service"
 
 export const managementModules = new Elysia({ prefix: "/manage" })
 	.patch(
@@ -23,12 +17,20 @@ export const managementModules = new Elysia({ prefix: "/manage" })
 
 			if (status === 500) {
 				set.status = 500
-				return { message: "Internal server error" }
+				return { code: 500, message: "Internal server error" }
 			}
 
 			return { message: "Success" }
 		},
-		{ body: updateAdminProfileModel.body, response: updateAdminProfileModel.response },
+		{
+			body: updateAdminProfileModel.body,
+			response: {
+				200: updateAdminProfileModel.response,
+				400: ErrorModel,
+				404: ErrorModel,
+				500: ErrorModel,
+			},
+		},
 	)
 	.get(
 		"/admin-acc",
@@ -53,7 +55,14 @@ export const managementModules = new Elysia({ prefix: "/manage" })
 				},
 			}
 		},
-		{ query: getAdminAccountsModel.query, response: getAdminAccountsModel.response },
+		{
+			query: getAdminAccountsModel.query,
+			response: {
+				200: getAdminAccountsModel.response,
+				400: ErrorModel,
+				500: ErrorModel,
+			},
+		},
 	)
 	.post(
 		"/create-admin-acc",
@@ -68,7 +77,11 @@ export const managementModules = new Elysia({ prefix: "/manage" })
 		},
 		{
 			body: createAdminAccountModel.body,
-			response: createAdminAccountModel.response,
+			response: {
+				200: createAdminAccountModel.response,
+				400: ErrorModel,
+				500: ErrorModel,
+			},
 		},
 	)
 	.put(
@@ -79,17 +92,24 @@ export const managementModules = new Elysia({ prefix: "/manage" })
 
 			if (status === 404) {
 				set.status = 404
-				return { message: "User not found" }
+				return { code: 404, message: "User not found" }
 			}
 
 			if (status === 500) {
 				set.status = 500
-				return { message: "Internal server error" }
+				return { code: 500, message: "Internal server error" }
 			}
 
 			return { message: "Success" }
 		},
-		{ body: banAdminAccountModel.body, response: banAdminAccountModel.response },
+		{
+			body: banAdminAccountModel.body,
+			response: {
+				200: banAdminAccountModel.response,
+				400: ErrorModel,
+				500: ErrorModel,
+			},
+		},
 	)
 	.put(
 		"/unban-admin",
@@ -99,15 +119,22 @@ export const managementModules = new Elysia({ prefix: "/manage" })
 
 			if (status === 404) {
 				set.status = 404
-				return { message: "User not found" }
+				return { code: 404, message: "User not found" }
 			}
 
 			if (status === 500) {
 				set.status = 500
-				return { message: "Internal server error" }
+				return { code: 500, message: "Internal server error" }
 			}
 
 			return { message: "Success" }
 		},
-		{ body: unbanAdminAccountModel.body, response: unbanAdminAccountModel.response },
+		{
+			body: unbanAdminAccountModel.body,
+			response: {
+				200: unbanAdminAccountModel.response,
+				400: ErrorModel,
+				500: ErrorModel,
+			},
+		},
 	)

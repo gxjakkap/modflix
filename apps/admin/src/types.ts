@@ -44,15 +44,6 @@ export interface Cast {
 	cast: CastMember[]
 }
 
-export interface Customer {
-	code: string
-	name: string
-	phone: string
-	email: string
-	country: string
-	dob: string
-}
-
 export interface SignupFormData {
 	email: string
 	fullname: string
