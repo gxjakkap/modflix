@@ -1,12 +1,15 @@
 import { db } from "@modflix/db"
-import { serverEnv } from "@modflix/env"
+import * as schema from "@modflix/db/schema"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { admin, username } from "better-auth/plugins"
 import { createAccessControl } from "better-auth/plugins/access"
 import { adminAc, defaultStatements } from "better-auth/plugins/admin/access"
+import { config } from "dotenv"
 
 import { Roles } from "./roles"
+
+config({ path: new URL("../../../../.env", import.meta.url) })
 
 const statement = {
 	...defaultStatements,
@@ -22,13 +25,10 @@ const adminRole = ac.newRole({
 	...adminAc.statements,
 })
 
-const staffRole = ac.newRole({
-	user: ["list"],
-})
-
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "pg",
+		schema,
 	}),
 	emailAndPassword: {
 		enabled: true,
@@ -42,11 +42,11 @@ export const auth = betterAuth({
 			roles: {
 				[Roles.SUPER_ADMIN]: superAdminRole,
 				[Roles.ADMIN]: adminRole,
-				[Roles.STAFF]: staffRole,
 			},
 		}),
 	],
 	trustedOrigins: [
-		serverEnv.API_URL,
+		process.env.API_URL || "http://localhost:3000",
+		...(process.env.TRUSTED_ORIGINS?.split(",") || ["http://localhost:5173", "http://localhost:5174"]),
 	],
 })

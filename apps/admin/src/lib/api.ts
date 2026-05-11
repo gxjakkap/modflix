@@ -1,4 +1,8 @@
-import { treaty } from "@elysia/eden"
-import type { App } from "@modflix/api-types"
+import { treaty } from "@elysiajs/eden"
+import type { App } from "../../../api/src/index"
 
-export const api = treaty<App>(import.meta.env.VITE_API_URL)
+export const api = treaty<App>(import.meta.env.VITE_API_URL, {
+	fetch: {
+		credentials: "include",
+	},
+})

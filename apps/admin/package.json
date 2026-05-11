@@ -11,8 +11,9 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@elysia/eden": "^1.4.10",
+		"@elysiajs/eden": "^1.4.9",
 		"@modflix/api-types": "workspace:*",
+		"@modflix/auth": "workspace:*",
 		"react": "^19.2.5",
 		"react-dom": "^19.2.5",
 		"react-router-dom": "^7.14.2",
@@ -24,6 +25,7 @@
 		"@types/react-dom": "^19.2.3",
 		"@vitejs/plugin-react": "^6.0.1",
 		"globals": "^17.5.0",
+		"elysia": "latest",
 		"typescript": "5.9.2",
 		"vite": "^8.0.10"
 	}

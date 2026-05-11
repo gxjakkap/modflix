@@ -4,8 +4,34 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		".": "./src/index.ts",
-		"./client": "./src/client.ts"
+		".": {
+			"import": "./src/index.ts",
+			"default": "./src/index.ts"
+		},
+		"./client": {
+			"import": "./src/client.ts",
+			"default": "./src/client.ts"
+		},
+		"./helper": {
+			"import": "./src/helper.ts",
+			"default": "./src/helper.ts"
+		},
+		"./roles": {
+			"import": "./src/roles.ts",
+			"default": "./src/roles.ts"
+		},
+		"./better-auth": {
+			"import": "./src/bta.ts",
+			"default": "./src/bta.ts"
+		},
+		"./better-auth-client": {
+			"import": "./src/btac.ts",
+			"default": "./src/btac.ts"
+		},
+		"./better-auth-react": {
+			"import": "./src/btareact.ts",
+			"default": "./src/btareact.ts"
+		}
 	},
 	"types": "src/index.ts",
 	"files": [
@@ -16,12 +42,11 @@
 	},
 	"devDependencies": {
 		"@modflix/biome-config": "workspace:*",
-		"dotenv": "^17.2.1",
 		"tsx": "^4.20.5"
 	},
 	"dependencies": {
 		"@modflix/db": "workspace:*",
-		"@modflix/env": "workspace:*",
+		"dotenv": "^17.2.1",
 		"better-auth": "^1.3.7",
 		"zod": "^4.0.17"
 	}

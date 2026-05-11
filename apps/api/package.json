@@ -1,5 +1,5 @@
 {
-	"name": "elysia",
+	"name": "@modflix/api",
 	"version": "1.0.50",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,6 @@
 		"@elysiajs/cors": "^1.4.2",
 		"@modflix/auth": "workspace:*",
 		"@modflix/db": "workspace:*",
-		"@modflix/env": "workspace:*",
 		"drizzle-typebox": "^0.3.3",
 		"elysia": "latest"
 	},

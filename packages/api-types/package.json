@@ -5,6 +5,9 @@
 	"exports": {
 		".": "./src/index.ts"
 	},
+	"dependencies": {
+		"elysia": "latest"
+	},
 	"devDependencies": {
 		"@modflix/biome-config": "workspace:*"
 	}

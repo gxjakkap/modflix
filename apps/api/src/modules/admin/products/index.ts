@@ -3,7 +3,7 @@ import { count, ilike } from "@modflix/db/orm"
 import { title } from "@modflix/db/schema"
 import Elysia from "elysia"
 import { ErrorModel } from "@/schemas/error"
-import { ProductsModel } from "./model"
+import { getProductsModel } from "./model"
 
 export const productsModule = new Elysia({ prefix: "/products" }).get(
 	"/",
@@ -31,9 +31,9 @@ export const productsModule = new Elysia({ prefix: "/products" }).get(
 		}
 	},
 	{
-		query: ProductsModel.query,
+		query: getProductsModel.query,
 		response: {
-			200: ProductsModel.response,
+			200: getProductsModel.response,
 			400: ErrorModel,
 			500: ErrorModel,
 		},

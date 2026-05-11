@@ -1,4 +1,3 @@
-import * as readline from "node:readline/promises"
 import { db } from "@modflix/db"
 import { eq } from "@modflix/db/orm"
 import { user } from "@modflix/db/schema"
@@ -6,22 +5,17 @@ import { user } from "@modflix/db/schema"
 import { auth } from "./auth"
 import { Roles } from "./roles"
 
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout,
-})
-
-if (!process.argv[2] || !process.argv[3]) {
-	console.error("Usage: bun run auth:seed <email> <username>")
+if (!process.argv[2] || !process.argv[3] || !process.argv[4]) {
+	console.error("Usage: bun run auth:seed <email> <username> <password>")
 	process.exit(1)
 }
 
 const email = process.argv[2]
 const username = process.argv[3]
+const password = process.argv[4]
 
 console.log(`Email: ${email}`)
 console.log(`User: ${username}`)
-const password = await rl.question("Set Your Password: ")
 
 function createCurrentDate() {
 	return new Date().toLocaleString("en-GB", {

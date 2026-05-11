@@ -1,2 +1,3 @@
 export { auth } from "./auth"
-export { Roles, StaffRoles, AdminRoles, RolesEnum, StaffRolesEnum, type RoleKeys } from "./roles"
+export type { AdminRole, RoleKeys } from "./roles"
+export { AdminRoles, AdminRolesEnum, Roles, RolesEnum } from "./roles"

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { authClient } from '../lib/auth-client';
 import logoPic from '../assets/Logo.png';
 import closeEye from '../assets/closepassword.png';
 import openEye  from '../assets/openpassword.png';
@@ -12,13 +13,30 @@ export default function LoginCredentialsPage({ onLogin }: LoginCredentialsPagePr
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [error, setError]       = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!email || !password) {
       setError('กรุณากรอก Email และ Password');
       return;
     }
-    onLogin();  // ✅ ผ่านแล้วไปหน้า home
+
+    setSubmitting(true);
+    setError('');
+
+    const { error: authError } = await authClient.signIn.email({
+      email,
+      password,
+    });
+
+    if (authError) {
+      setError(authError.message || 'Login failed');
+      setSubmitting(false);
+      return;
+    }
+
+    await onLogin();
+    setSubmitting(false);
   };
 
   return (
@@ -62,7 +80,9 @@ export default function LoginCredentialsPage({ onLogin }: LoginCredentialsPagePr
           </div>
         </div>
 
-        <button style={s.btn} onClick={handleSubmit}>LOGIN</button>
+        <button style={s.btn} onClick={handleSubmit} disabled={submitting}>
+          {submitting ? 'LOGGING IN…' : 'LOGIN'}
+        </button>
       </div>
     </div>
   );

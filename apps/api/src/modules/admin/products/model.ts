@@ -4,7 +4,7 @@ import { t } from "elysia"
 
 const titleSchema = createSelectSchema(title)
 
-export const ProductsModel = {
+export const getProductsModel = {
 	query: t.Object({
 		page: t.Numeric({ default: 1, minimum: 1 }),
 		limit: t.Numeric({ default: 20, minimum: 1, maximum: 100 }),
