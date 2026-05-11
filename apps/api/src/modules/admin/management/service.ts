@@ -1,12 +1,16 @@
 import { AdminRole, AdminRoles, auth, Roles } from "@modflix/auth"
 import { db } from "@modflix/db"
-import { and, count, eq, ilike, inArray, isNotNull, sql } from "@modflix/db/orm"
+import { and, count, eq, ilike, inArray, isNotNull, or, sql } from "@modflix/db/orm"
 import { session, user } from "@modflix/db/schema"
 
 export const getAdminAccounts = async (offset: number, limit: number, search?: string) => {
 	const where = and(
 		inArray(user.role, Array.from(AdminRoles)),
-		search ? ilike(user.name, `%${search}%`) : undefined,
+		or(
+			search ? ilike(user.name, `%${search}%`) : undefined,
+			search ? ilike(user.email, `%${search}%`) : undefined,
+			search ? ilike(user.username, `%${search}%`) : undefined,
+		),
 		isNotNull(user.username),
 	)
 
