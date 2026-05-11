@@ -9,11 +9,12 @@ export const getAdminAccountsModel = {
 	response: t.Object({
 		data: t.Array(
 			t.Object({
-				username: t.Nullable(t.String()),
+				username: t.String(),
 				name: t.String(),
 				role: t.String(),
 				lastLogin: t.Date(),
 				email: t.String({ format: "email" }),
+				isBanned: t.Boolean(),
 			}),
 		),
 		pagination: t.Object({
@@ -34,6 +35,24 @@ export const createAdminAccountModel = {
 		fullName: t.String(),
 		password: t.String(),
 		role: t.Union([t.Literal("super_admin"), t.Literal("admin")]),
+	}),
+	response: t.Object({
+		message: t.String(),
+	}),
+}
+
+export const banAdminAccountModel = {
+	body: t.Object({
+		username: t.String(),
+	}),
+	response: t.Object({
+		message: t.String(),
+	}),
+}
+
+export const unbanAdminAccountModel = {
+	body: t.Object({
+		username: t.String(),
 	}),
 	response: t.Object({
 		message: t.String(),

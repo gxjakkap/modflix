@@ -41,12 +41,7 @@ function ManagementDashboard({ user }: ManagementDashboardProps) {
 				</div>
 				<div style={s.card}>
 					<Routes>
-						<Route
-							path="admin"
-							element={
-								<AdminAccounts onAddAdmin={() => navigate("/management/create-admin")} onDelete={handleDelete} />
-							}
-						/>
+						<Route path="admin" element={<AdminAccounts onAddAdmin={() => navigate("/management/create-admin")} />} />
 						<Route path="sessions" element={<Sessions data={data} onDelete={handleDelete} />} />
 						<Route path="login-activity" element={<LoginActivity data={data} onDelete={handleDelete} />} />
 						<Route

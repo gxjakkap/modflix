@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react"
 import { api } from "../lib/api"
-import Dropdown from "./dropdown"
+import AdminAccountDropdown from "./admin-account-dropdown"
 import Pagination from "./pagination"
 import SearchBar from "./search-bar"
 
-const ACTIONS = ["Delete", "Suspend"]
-
 interface AdminAccountsProps {
 	onAddAdmin: () => void
-	onDelete: (id: string) => void
 }
 
 interface AdminAccountData {
-	username: string | null
+	username: string
 	name: string
 	role: string
 	lastLogin: Date
 	email: string
+	isBanned: boolean
 }
 
-function AdminAccounts({ onAddAdmin, onDelete }: AdminAccountsProps) {
+function AdminAccounts({ onAddAdmin }: AdminAccountsProps) {
 	const [search, setSearch] = useState("")
 	const [page, setPage] = useState(1)
 	const [data, setData] = useState<AdminAccountData[]>([])
@@ -35,6 +33,36 @@ function AdminAccounts({ onAddAdmin, onDelete }: AdminAccountsProps) {
 		})
 	}, [search, page])
 
+	const onBan = (username: string) => {
+		api.admin.manage["ban-admin"].put({ username }).then((res) => {
+			if (res.status !== 200) {
+				window.alert(`Error: [${res.status}] ${res.data?.message || "Unknown error"}`)
+			} else {
+				window.alert(`User ${username} banned!`)
+				api.admin.manage["admin-acc"].get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
+					if (res.status !== 200 || !res.data) return
+					setData(res.data.data)
+					setTotalPages(res.data.pagination.totalPages)
+				})
+			}
+		})
+	}
+
+	const onUnban = (username: string) => {
+		api.admin.manage["unban-admin"].put({ username }).then((res) => {
+			if (res.status !== 200) {
+				window.alert(`Error: [${res.status}] ${res.data?.message || "Unknown error"}`)
+			} else {
+				window.alert(`User ${username} unbanned!`)
+				api.admin.manage["admin-acc"].get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
+					if (res.status !== 200 || !res.data) return
+					setData(res.data.data)
+					setTotalPages(res.data.pagination.totalPages)
+				})
+			}
+		})
+	}
+
 	return (
 		<div>
 			<div style={s.toolbar}>
@@ -47,12 +75,13 @@ function AdminAccounts({ onAddAdmin, onDelete }: AdminAccountsProps) {
 			<table style={s.table}>
 				<thead>
 					<tr style={s.thead}>
-						<Th w="8%">USERNAME</Th>
+						<Th w="12%">USERNAME</Th>
 						<Th w="18%">NAME</Th>
 						<Th w="14%">ROLE</Th>
 						<Th w="20%">LAST LOGIN</Th>
-						<Th w="28%">EMAIL</Th>
-						<Th w="12%"></Th>
+						<Th w="24%">EMAIL</Th>
+						<Th w="8%">ISBANNED</Th>
+						<Th w="4%"></Th>
 					</tr>
 				</thead>
 				<tbody>
@@ -63,8 +92,14 @@ function AdminAccounts({ onAddAdmin, onDelete }: AdminAccountsProps) {
 							<td style={s.td}>{a.role}</td>
 							<td style={s.td}>{a.lastLogin.toDateString()}</td>
 							<td style={s.td}>{a.email}</td>
+							<td style={s.td}>{a.isBanned ? "YES" : "NO"}</td>
 							<td style={{ ...s.td, position: "relative" }}>
-								<Dropdown actions={ACTIONS} onDelete={() => onDelete(a.id)} />
+								<AdminAccountDropdown
+									username={a.username}
+									isBanned={a.isBanned}
+									onBan={() => onBan(a.username)}
+									onUnban={() => onUnban(a.username)}
+								/>
 							</td>
 						</tr>
 					))}
