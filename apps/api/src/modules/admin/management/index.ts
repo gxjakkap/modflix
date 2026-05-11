@@ -33,7 +33,7 @@ export const managementModules = new Elysia({ prefix: "/manage" })
 		},
 	)
 	.get(
-		"/admin-acc",
+		"/admins",
 		async ({ query }) => {
 			const { page, limit, search } = query
 			const offset = (page - 1) * limit
@@ -65,7 +65,7 @@ export const managementModules = new Elysia({ prefix: "/manage" })
 		},
 	)
 	.post(
-		"/create-admin-acc",
+		"/admin",
 		async ({ body }) => {
 			const { email, username, fullName, password, role } = body
 

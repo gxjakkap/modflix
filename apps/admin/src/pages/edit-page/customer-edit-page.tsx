@@ -39,7 +39,7 @@ export default function CustomerEditPage({ pic, username }: CustomerEditPageProp
 	}
 
 	useEffect(() => {
-		api.admin.customers["get-customer-by-id"]
+		api.admin.customers
 			.get({
 				query: {
 					id: id,
@@ -83,7 +83,7 @@ export default function CustomerEditPage({ pic, username }: CustomerEditPageProp
 	const handleSave = () => {
 		if (!validate()) return
 		setSaving(true)
-		api.admin.customers["update-customer"]
+		api.admin.customers
 			.patch({
 				userId: draft.id,
 				fullName: draft.name,

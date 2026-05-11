@@ -34,7 +34,7 @@ export default function CustomerPage({ pic, username }: CustomerPageProps) {
 	const PER_PAGE = 5
 
 	useEffect(() => {
-		api.admin.customers["get-customers-acc"].get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
+		api.admin.customers.list.get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
 			if (res.status !== 200 || !res.data) return
 
 			const formattedData = res.data.data.map((d) => ({
@@ -68,19 +68,17 @@ export default function CustomerPage({ pic, username }: CustomerPageProps) {
 									window.alert(`Error: [${res.error?.status}] ${res.error?.value}`)
 									return
 								}
-								api.admin.customers["get-customers-acc"]
-									.get({ query: { search, limit: PER_PAGE, page } })
-									.then((res) => {
-										if (res.status !== 200 || !res.data) return
+								api.admin.customers.list.get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
+									if (res.status !== 200 || !res.data) return
 
-										const formattedData = res.data.data.map((d) => ({
-											...d,
-											dateRegistered: new Date(d.dateRegistered).toLocaleDateString("th-TH", { dateStyle: "short" }),
-										})) as unknown as Customer[]
+									const formattedData = res.data.data.map((d) => ({
+										...d,
+										dateRegistered: new Date(d.dateRegistered).toLocaleDateString("th-TH", { dateStyle: "short" }),
+									})) as unknown as Customer[]
 
-										setData(formattedData)
-										setTotalPages(res.data.pagination.totalPages)
-									})
+									setData(formattedData)
+									setTotalPages(res.data.pagination.totalPages)
+								})
 							})
 					} else {
 						api.admin.customers.ban
@@ -92,19 +90,17 @@ export default function CustomerPage({ pic, username }: CustomerPageProps) {
 									window.alert(`Error: [${res.error?.status}] ${res.error?.value}`)
 									return
 								}
-								api.admin.customers["get-customers-acc"]
-									.get({ query: { search, limit: PER_PAGE, page } })
-									.then((res) => {
-										if (res.status !== 200 || !res.data) return
+								api.admin.customers.list.get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
+									if (res.status !== 200 || !res.data) return
 
-										const formattedData = res.data.data.map((d) => ({
-											...d,
-											dateRegistered: new Date(d.dateRegistered).toLocaleDateString("th-TH", { dateStyle: "short" }),
-										})) as unknown as Customer[]
+									const formattedData = res.data.data.map((d) => ({
+										...d,
+										dateRegistered: new Date(d.dateRegistered).toLocaleDateString("th-TH", { dateStyle: "short" }),
+									})) as unknown as Customer[]
 
-										setData(formattedData)
-										setTotalPages(res.data.pagination.totalPages)
-									})
+									setData(formattedData)
+									setTotalPages(res.data.pagination.totalPages)
+								})
 							})
 					}
 				}

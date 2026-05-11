@@ -26,7 +26,7 @@ function AdminAccounts({ onAddAdmin }: AdminAccountsProps) {
 	const PER_PAGE = 5
 
 	useEffect(() => {
-		api.admin.manage["admin-acc"].get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
+		api.admin.manage.admins.get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
 			if (res.status !== 200 || !res.data) return
 			setData(res.data.data)
 			setTotalPages(res.data.pagination.totalPages)
@@ -39,7 +39,7 @@ function AdminAccounts({ onAddAdmin }: AdminAccountsProps) {
 				window.alert(`Error: [${res.status}] ${res.data?.message || "Unknown error"}`)
 			} else {
 				window.alert(`User ${username} banned!`)
-				api.admin.manage["admin-acc"].get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
+				api.admin.manage.admins.get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
 					if (res.status !== 200 || !res.data) return
 					setData(res.data.data)
 					setTotalPages(res.data.pagination.totalPages)
@@ -54,7 +54,7 @@ function AdminAccounts({ onAddAdmin }: AdminAccountsProps) {
 				window.alert(`Error: [${res.status}] ${res.data?.message || "Unknown error"}`)
 			} else {
 				window.alert(`User ${username} unbanned!`)
-				api.admin.manage["admin-acc"].get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
+				api.admin.manage.admins.get({ query: { search, limit: PER_PAGE, page } }).then((res) => {
 					if (res.status !== 200 || !res.data) return
 					setData(res.data.data)
 					setTotalPages(res.data.pagination.totalPages)

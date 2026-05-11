@@ -40,7 +40,7 @@ function CreateAdmin({ onAddSuccess, data = [] }: CreateAdminProps) {
 			return
 		}
 
-		api.admin.manage["create-admin-acc"]
+		api.admin.manage.admin
 			.post({
 				email: form.email,
 				username: form.username,

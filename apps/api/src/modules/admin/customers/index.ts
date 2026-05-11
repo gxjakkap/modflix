@@ -17,7 +17,7 @@ import {
 
 export const customersModules = new Elysia({ prefix: "/customers" })
 	.get(
-		"/get-customers-acc",
+		"/list",
 		async ({ query }) => {
 			const { page, limit, search } = query
 			const offset = (page - 1) * limit
@@ -50,7 +50,7 @@ export const customersModules = new Elysia({ prefix: "/customers" })
 		},
 	)
 	.get(
-		"/get-customer-by-id",
+		"/",
 		async ({ query, set }) => {
 			const { id } = query
 
@@ -82,7 +82,7 @@ export const customersModules = new Elysia({ prefix: "/customers" })
 		},
 	)
 	.patch(
-		"/update-customer",
+		"/",
 		async ({ body, set }) => {
 			const result = await updateCustomerProfile(body.userId, body)
 
