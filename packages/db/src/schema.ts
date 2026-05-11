@@ -1,6 +1,6 @@
 /**
  * Auto-generated barrel file.
- * Generated at 2026-05-10T20:45:42.917Z
+ * Generated at 2026-05-11T12:50:14.351Z
  * Do not edit manually, re-run bun run db:gen-schema instead.
  */
 
@@ -21,6 +21,7 @@ export { payment } from "./schemas/tables/payment"
 export { people } from "./schemas/tables/people"
 export { playlistItem } from "./schemas/tables/playlist-item"
 export { playlist } from "./schemas/tables/playlist"
+export { purchasementItem } from "./schemas/tables/purchasement-item"
 export { purchasement } from "./schemas/tables/purchasement"
 export { season } from "./schemas/tables/season"
 export { session } from "./schemas/tables/session"

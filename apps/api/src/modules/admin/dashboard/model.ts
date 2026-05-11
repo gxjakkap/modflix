@@ -1,14 +1,26 @@
 import { t } from "elysia"
 
-export const DashboardModel = {
+export const dashboardStatsModel = {
 	response: t.Object({
 		data: t.Object({
 			userCount: t.Number(),
-			userDiffPercent: t.Number(),
+			userOneDDiffPercent: t.Number(),
 			orderCount: t.Number(),
-			orderDiffPercent: t.Number(),
+			orderOneDDiffPercent: t.Number(),
 			salesCount: t.Number(),
-			salesDiffPercent: t.Number(),
+			salesOneDDiffPercent: t.Number(),
+			topUsers: t.Array(
+				t.Object({
+					username: t.String(),
+					image: t.String(),
+				}),
+			),
+			sevenDaysRevenue: t.Array(
+				t.Object({
+					day: t.String(),
+					revenue: t.Number(),
+				}),
+			),
 		}),
 	}),
 }

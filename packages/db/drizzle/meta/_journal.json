@@ -8,6 +8,20 @@
       "when": 1778445943271,
       "tag": "0000_bent_magma",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778503423657,
+      "tag": "0001_dear_frog_thor",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778503814770,
+      "tag": "0002_magical_leech",
+      "breakpoints": true
     }
   ]
 }
