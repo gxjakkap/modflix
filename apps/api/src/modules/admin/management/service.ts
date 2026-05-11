@@ -9,7 +9,7 @@ export const getAdminAccounts = async (offset: number, limit: number, search?: s
 	const [rows, [{ total }]] = await Promise.all([
 		db
 			.select({
-				id: user.id,
+				username: user.username,
 				name: user.name,
 				role: sql<string>`coalesce(${user.role}, ${Roles.ADMIN})`,
 				lastLogin: sql<Date>`coalesce(max(${session.updatedAt}), ${user.createdAt})`,

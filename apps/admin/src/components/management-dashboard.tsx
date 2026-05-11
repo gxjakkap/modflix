@@ -21,31 +21,6 @@ function ManagementDashboard({ user }: ManagementDashboardProps) {
 		setData((prev) => prev.filter((item) => item.id !== id))
 	}
 
-	const handleAddAdmin = (newAdmin: { fullname: string; email: string; role: string }) => {
-		const nextId = String(data.length + 1).padStart(4, "0")
-		const now = new Date()
-		const dateStr = `${String(now.getMonth() + 1).padStart(2, "0")}/${String(now.getDate()).padStart(2, "0")}/${String(now.getFullYear()).slice(-2)} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")} ${now.getHours() >= 12 ? "PM" : "AM"}`
-		const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
-		const timeStr = `${months[now.getMonth()]} ${now.getDate()}, ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`
-
-		setData((prev) => [
-			...prev,
-			{
-				id: nextId,
-				name: newAdmin.fullname.toUpperCase(),
-				role: newAdmin.role || "ADMIN",
-				login: dateStr,
-				email: newAdmin.email,
-				device: "Mac",
-				ip: "192.168.1.1",
-				last: "1 min ago",
-				risk: "LOW" as const,
-				time: timeStr,
-				event: "LOGIN",
-			},
-		])
-	}
-
 	return (
 		<>
 			<Navbar pic={user.image || mockProfilePic} username={user.username || "username"} />
@@ -79,8 +54,7 @@ function ManagementDashboard({ user }: ManagementDashboardProps) {
 							element={
 								<CreateAdmin
 									data={data}
-									onAdd={(form) => {
-										handleAddAdmin(form)
+									onAddSuccess={() => {
 										navigate("/management/admin")
 									}}
 								/>

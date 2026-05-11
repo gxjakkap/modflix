@@ -9,7 +9,7 @@ export const getAdminAccountsModel = {
 	response: t.Object({
 		data: t.Array(
 			t.Object({
-				id: t.String(),
+				username: t.Nullable(t.String()),
 				name: t.String(),
 				role: t.String(),
 				lastLogin: t.Date(),

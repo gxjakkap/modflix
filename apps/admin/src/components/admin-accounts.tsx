@@ -12,7 +12,7 @@ interface AdminAccountsProps {
 }
 
 interface AdminAccountData {
-	id: string
+	username: string | null
 	name: string
 	role: string
 	lastLogin: Date
@@ -47,7 +47,7 @@ function AdminAccounts({ onAddAdmin, onDelete }: AdminAccountsProps) {
 			<table style={s.table}>
 				<thead>
 					<tr style={s.thead}>
-						<Th w="8%">ID</Th>
+						<Th w="8%">USERNAME</Th>
 						<Th w="18%">NAME</Th>
 						<Th w="14%">ROLE</Th>
 						<Th w="20%">LAST LOGIN</Th>
@@ -57,8 +57,8 @@ function AdminAccounts({ onAddAdmin, onDelete }: AdminAccountsProps) {
 				</thead>
 				<tbody>
 					{data.map((a) => (
-						<tr key={a.id} style={s.tr}>
-							<td style={s.td}>{a.id}</td>
+						<tr key={a.username} style={s.tr}>
+							<td style={s.td}>{a.username}</td>
 							<td style={s.td}>{a.name}</td>
 							<td style={s.td}>{a.role}</td>
 							<td style={s.td}>{a.lastLogin.toDateString()}</td>
