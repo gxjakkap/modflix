@@ -117,3 +117,29 @@ export const unbanAdminAccount = async (username: string, headers: Headers) => {
 		}
 	}
 }
+
+export const updateAdminProfile = async (
+	userId: string,
+	data: { fullName: string; username: string },
+	headers: Headers,
+) => {
+	try {
+		console.log("Updating profile via Auth API for user ID:", userId)
+		const updated = await auth.api.updateUser({
+			body: {
+				name: data.fullName,
+				username: data.username,
+			},
+			headers,
+		})
+		console.log("Profile update result:", updated)
+		return {
+			status: 200,
+		}
+	} catch (e) {
+		console.error("Failed to update profile via Auth API:", e)
+		return {
+			status: 500,
+		}
+	}
+}

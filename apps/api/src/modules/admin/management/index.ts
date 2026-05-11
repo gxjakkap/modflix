@@ -1,8 +1,35 @@
 import Elysia from "elysia"
-import { banAdminAccountModel, createAdminAccountModel, getAdminAccountsModel, unbanAdminAccountModel } from "./model"
-import { banAdminAccount, createAdminAccount, getAdminAccounts, unbanAdminAccount } from "./service"
+import { betterAuth } from "../../auth"
+import {
+	banAdminAccountModel,
+	createAdminAccountModel,
+	getAdminAccountsModel,
+	unbanAdminAccountModel,
+	updateAdminProfileModel,
+} from "./model"
+import {
+	banAdminAccount,
+	createAdminAccount,
+	getAdminAccounts,
+	unbanAdminAccount,
+	updateAdminProfile,
+} from "./service"
 
 export const managementModules = new Elysia({ prefix: "/manage" })
+	.patch(
+		"/update-profile",
+		async ({ body, set, request: { headers } }) => {
+			const { status } = await updateAdminProfile(body.userId, body, headers)
+
+			if (status === 500) {
+				set.status = 500
+				return { message: "Internal server error" }
+			}
+
+			return { message: "Success" }
+		},
+		{ body: updateAdminProfileModel.body, response: updateAdminProfileModel.response },
+	)
 	.get(
 		"/admin-acc",
 		async ({ query }) => {

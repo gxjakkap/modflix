@@ -268,6 +268,7 @@ function App() {
 		setCustomers((prev) => prev.map((c) => (c.code === updated.code ? updated : c)))
 
 	const commonProps = {
+		user,
 		isLoggedIn: !!user,
 		username: user?.username || "",
 		pic: user?.image || mockProfilePic,
@@ -346,7 +347,7 @@ function App() {
 				<Route
 					path="/admin-profile"
 					element={
-						user ? <AdminProfilePage {...commonProps} onSave={() => refetch()} /> : <Navigate to="/login" replace />
+						user ? <AdminProfilePage user={user} onSave={() => refetch()} /> : <Navigate to="/login" replace />
 					}
 				/>
 				<Route

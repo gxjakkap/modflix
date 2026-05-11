@@ -58,3 +58,13 @@ export const unbanAdminAccountModel = {
 		message: t.String(),
 	}),
 }
+export const updateAdminProfileModel = {
+	body: t.Object({
+		userId: t.String(),
+		fullName: t.String(),
+		username: t.String(),
+	}),
+	response: t.Object({
+		message: t.String(),
+	}),
+}
