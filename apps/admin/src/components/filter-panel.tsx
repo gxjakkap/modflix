@@ -1,29 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LovModal from "./lov-modal";
 import "./filter-panel.css";
-import type { LovProduct } from '../types';
+import { api } from "../lib/api";
+import type { LovProduct } from "../types";
 
 interface FilterPanelProps {
-  product: string
-  setProduct: (value: string) => void
-  dateFrom: string
-  setDateFrom: (value: string) => void
-  dateTo: string
-  setDateTo: (value: string) => void
-  status: string
-  setStatus: (value: string) => void
-  onApply: () => void
-  onReset: () => void
+  product: string;
+  setProduct: (value: string) => void;
+  dateFrom: string;
+  setDateFrom: (value: string) => void;
+  dateTo: string;
+  setDateTo: (value: string) => void;
+  status: string;
+  setStatus: (value: string) => void;
+  onApply: () => void;
+  onReset: () => void;
 }
 
 export default function FilterPanel({
-  product, setProduct,
-  dateFrom, setDateFrom,
-  dateTo, setDateTo,
-  status, setStatus,
-  onApply, onReset,
+  product,
+  setProduct,
+  dateFrom,
+  setDateFrom,
+  dateTo,
+  setDateTo,
+  status,
+  setStatus,
+  onApply,
+  onReset,
 }: FilterPanelProps) {
   const [lovOpen, setLovOpen] = useState(false);
+  const [products, setProducts] = useState<LovProduct[]>([]);
+
+  useEffect(() => {
+    if (!lovOpen || products.length > 0) return;
+    api.admin.products.list.get({ query: { page: 1, limit: 100 } }).then((res) => {
+      if (res.status === 200 && res.data) {
+        setProducts(
+          res.data.data.map((p) => ({
+            code: p.id,
+            name: p.name,
+            price: p.price ?? "N/A",
+          })),
+        );
+      }
+    });
+  }, [lovOpen]);
 
   const handleSelectProduct = (selectedArray: LovProduct[]) => {
     if (selectedArray && selectedArray.length > 0) {
@@ -47,16 +69,34 @@ export default function FilterPanel({
           <div className="filter-group">
             <label className="filter-label">Product</label>
             <div className="filter-input-wrap">
-              <input className="filter-input" value={product} onChange={(e) => setProduct(e.target.value)} placeholder="Select Product" readOnly />
-              <button className="lov-btn" onClick={() => setLovOpen(true)}>LoV</button>
+              <input
+                className="filter-input"
+                value={product}
+                onChange={(e) => setProduct(e.target.value)}
+                placeholder="Select Product"
+                readOnly
+              />
+              <button className="lov-btn" onClick={() => setLovOpen(true)}>
+                LoV
+              </button>
             </div>
           </div>
           <div className="filter-group filter-group--date">
             <label className="filter-label">Date Range</label>
             <div className="date-row">
-              <input type="date" className="filter-input" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+              <input
+                type="date"
+                className="filter-input"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+              />
               <span className="date-sep">to</span>
-              <input type="date" className="filter-input" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+              <input
+                type="date"
+                className="filter-input"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+              />
             </div>
           </div>
         </div>
@@ -64,8 +104,15 @@ export default function FilterPanel({
           <div className="filter-group">
             <label className="filter-label">Status</label>
             <div className="select-wrap">
-              <select className="filter-select" value={status} onChange={(e) => setStatus(e.target.value)}>
-                <option>All</option><option>Paid</option><option>Pending</option><option>Cancelled</option>
+              <select
+                className="filter-select"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="SUCCESS">Success</option>
+                <option value="PENDING">Pending</option>
+                <option value="FAILED">Failed</option>
               </select>
               <span className="select-arrow">▼</span>
             </div>
@@ -73,16 +120,37 @@ export default function FilterPanel({
         </div>
         <hr className="filter-divider" />
         <div className="filter-actions">
-          <button className="btn-reset" onClick={onReset}>RESET</button>
+          <button className="btn-reset" onClick={onReset}>
+            RESET
+          </button>
           <button className="btn-apply" onClick={onApply}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
             </svg>
             Apply Filters
           </button>
         </div>
       </section>
-      <LovModal open={lovOpen} onSelect={handleSelectProduct} onClose={() => setLovOpen(false)} />
+      <LovModal<LovProduct>
+        open={lovOpen}
+        onSelect={handleSelectProduct}
+        onClose={() => setLovOpen(false)}
+        data={products}
+        columns={[
+          { key: "name", label: "NAME" },
+          { key: "price", label: "PRICE" },
+        ]}
+        idKey="code"
+        displayKey="name"
+        title="Select Product"
+      />
     </>
   );
 }

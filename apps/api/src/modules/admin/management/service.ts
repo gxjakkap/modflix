@@ -1,4 +1,4 @@
-import { AdminRole, AdminRoles, auth, Roles } from "@modflix/auth"
+import { type AdminRole, AdminRoles, auth, Roles } from "@modflix/auth"
 import { db } from "@modflix/db"
 import { and, count, eq, ilike, inArray, isNotNull, or, sql } from "@modflix/db/orm"
 import { session, user } from "@modflix/db/schema"
@@ -141,5 +141,34 @@ export const updateAdminProfile = async (
 		return {
 			status: 500,
 		}
+	}
+}
+
+export const getAdminSessions = async (offset: number, limit: number, search?: string) => {
+	const where = and(
+		inArray(user.role, Array.from(AdminRoles)),
+		search
+			? or(ilike(user.name, `%${search}%`), ilike(user.email, `%${search}%`), ilike(user.username, `%${search}%`))
+			: undefined,
+		isNotNull(user.username),
+	)
+	const [rows, [{ total }]] = await Promise.all([
+		db
+			.select({
+				token: session.token,
+				name: user.name,
+				role: sql<string>`coalesce(${user.role}, ${Roles.ADMIN})`,
+				device: sql<string>`coalesce(${session.userAgent}, 'Unknown')`,
+			})
+			.from(session)
+			.innerJoin(user, eq(session.userId, user.id))
+			.where(where)
+			.limit(limit)
+			.offset(offset),
+		db.select({ total: count() }).from(session).innerJoin(user, eq(session.userId, user.id)).where(where),
+	])
+	return {
+		rows,
+		total,
 	}
 }

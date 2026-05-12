@@ -11,8 +11,12 @@ export const playlistItem = pgTable(
 			.notNull()
 			.references(() => playlist.id, { onDelete: "cascade" }),
 		order: integer("order").notNull(),
-		titleId: uuid("title_id").references(() => title.id, { onDelete: "cascade" }),
-		episodeId: uuid("episode_id").references(() => episode.id, { onDelete: "cascade" }),
+		titleId: uuid("title_id").references(() => title.id, {
+			onDelete: "cascade",
+		}),
+		episodeId: uuid("episode_id").references(() => episode.id, {
+			onDelete: "cascade",
+		}),
 	},
 	(table) => [
 		primaryKey({ columns: [table.playlistId, table.order] }),

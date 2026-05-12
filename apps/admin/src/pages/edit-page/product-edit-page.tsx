@@ -1,304 +1,564 @@
-import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import Navbar from '../../components/navbar'
-import styles from './product-edit-page.module.css'
-import type { Product, Episode } from '../../types'
+import type { ChangeEvent, DragEvent } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import LovModal from "../../components/lov-modal"
+import Navbar from "../../components/navbar"
+import { api } from "../../lib/api"
+import styles from "./product-edit-page.module.css"
 
-const TYPES  = ['MOVIE', 'SERIES']
-const GENRES = ['Action', 'Drama', 'Horror', 'Romance', 'Sci-Fi', 'Sports', 'Comedy', 'Thriller']
+const TYPES = ["MOVIE", "SERIES"] as const
 
 interface ProductEditPageProps {
-    pic?: string
-    username?: string
-    products?: Product[]
-    onSave: (product: Product) => void
+	pic?: string
+	username?: string
 }
 
-export default function ProductEditPage({ pic, username, products = [], onSave }: ProductEditPageProps) {
-    const { code } = useParams<{ code: string }>()
-    const navigate = useNavigate()
-    const original = products.find(p => p.code === code)
+interface EpisodeDraft {
+	id?: string
+	episodeNum: string
+	name: string
+	description: string
+	releaseDate: string
+	movieFile: File | null
+	currentFileId: string | null
+}
 
-    const [draft, setDraft]       = useState<Product | null>(original ? { ...original, episodes: [...(original.episodes || [])] } : null)
-    const [errors, setErrors]     = useState<Record<string, string | null>>({})
-    const [saved, setSaved]       = useState(false)
+interface SeasonDraft {
+	id?: string
+	seasonNum: string
+	releaseDate: string
+	episodes: EpisodeDraft[]
+}
 
-    // inline add-episode form
-    const [showAddEp, setShowAddEp] = useState(false)
-    const [newEp, setNewEp]         = useState({ name: '', price: '' })
-    const [epErrors, setEpErrors]   = useState<Record<string, string | null>>({})
+export default function ProductEditPage({ pic, username }: ProductEditPageProps) {
+	const { code: id } = useParams<{ code: string }>()
+	const navigate = useNavigate()
 
-    // inline edit episode
-    const [editingEpIdx, setEditingEpIdx] = useState<number | null>(null)
-    const [editingEp, setEditingEp]       = useState<Partial<Episode>>({})
+	const [draft, setDraft] = useState({
+		name: "",
+		slug: "",
+		releaseDate: "",
+		type: "",
+	})
+	const [price, setPrice] = useState("")
+	const [posterFile, setPosterFile] = useState<File | null>(null)
+	const [bannerFile, setBannerFile] = useState<File | null>(null)
+	const [movieFile, setMovieFile] = useState<File | null>(null)
+	const [seasonRows, setSeasonRows] = useState<SeasonDraft[]>([])
+	const [errors, setErrors] = useState<Record<string, string | null>>({})
+	const [saved, setSaved] = useState(false)
+	const [saving, setSaving] = useState(false)
+	const [loading, setLoading] = useState(true)
 
-    if (!original || !draft) {
-        return (
-            <>
-                <Navbar pic={pic} username={username} />
-                <div className={styles.notFound}>
-                    <p>Product <strong>{code}</strong> not found.</p>
-                    <button className={styles.backBtn} onClick={() => navigate('/products')}>← Back</button>
-                </div>
-            </>
-        )
-    }
+	// LoV state
+	const [allGenres, setAllGenres] = useState<any[]>([])
+	const [allPeople, setAllPeople] = useState<any[]>([])
+	const [showGenreLov, setShowGenreLov] = useState(false)
+	const [showPeopleLov, setShowPeopleLov] = useState(false)
+	const [selectedGenres, setSelectedGenres] = useState<any[]>([])
+	const [castRows, setCastRows] = useState<any[]>([])
 
-    // ── Field change ──
-    const handleChange = (field: string, value: string) => {
-        setErrors(prev => ({ ...prev, [field]: null }))
-        setDraft(prev => prev ? ({ ...prev, [field]: value }) : prev)
-    }
+	// Current file IDs from server
+	const [currentPosterId, setCurrentPosterId] = useState<string | null>(null)
+	const [currentBannerId, setCurrentBannerId] = useState<string | null>(null)
+	const [currentMovieId, setCurrentMovieId] = useState<string | null>(null)
+	const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({})
 
-    // ── Validate main form ──
-    const validate = () => {
-        const e: Record<string, string> = {}
-        if (!draft.name?.trim())  e.name  = 'Required'
-        if (!draft.price?.trim() || isNaN(Number(draft.price))) e.price = 'Must be a number'
-        if (!draft.type)          e.type  = 'Required'
-        setErrors(e)
-        return Object.keys(e).length === 0
-    }
+	useEffect(() => {
+		if (!id) return
 
-    const handleSave = () => {
-        if (!validate()) return
-        onSave({ ...draft, totalEpisodes: draft.episodes.length })
-        setSaved(true)
-        setTimeout(() => navigate('/products'), 800)
-    }
+		setLoading(true)
+		Promise.all([
+			api.admin.products({ id }).get(),
+			api.admin.genres.list.get({ query: { page: 1, limit: 1000 } }),
+			api.admin.people.list.get({ query: { page: 1, limit: 1000 } }),
+		]).then(([res, resGenres, resPeople]) => {
+			setLoading(false)
+			if (res.status === 200 && res.data) {
+				const p = res.data as any
+				setDraft({
+					name: p.name,
+					slug: p.slug,
+					releaseDate: p.releaseDate,
+					type: p.type,
+				})
+				setPrice(p.price || "")
+				setCurrentPosterId(p.posterFileId || null)
+				setCurrentBannerId(p.bannerFileId || null)
+				setCurrentMovieId(p.mediaFileId || null)
+				setPreviewUrls(p.previewUrls || {})
+				setCastRows(
+					(p.cast || []).map((c: any) => {
+						const person = (resPeople.data?.data || []).find((px: any) => px.id === c.peopleId)
+						return { peopleId: c.peopleId, name: person?.name || "Unknown", role: c.role }
+					}),
+				)
+				setSelectedGenres(
+					(p.genres || [])
+						.map((gid: string) => {
+							return (resGenres.data?.data || []).find((gx: any) => gx.id === gid)
+						})
+						.filter(Boolean),
+				)
+				setSeasonRows(
+					(p.seasons || []).map((s: any) => ({
+						id: s.id,
+						seasonNum: String(s.seasonNum),
+						releaseDate: s.releaseDate,
+						episodes: (s.episodes || []).map((e: any) => ({
+							id: e.id,
+							episodeNum: String(e.episodeNum),
+							name: e.name,
+							description: e.description || "",
+							releaseDate: e.releaseDate,
+							movieFile: null,
+							currentFileId: e.movieFileId,
+						})),
+					})),
+				)
+			}
+			if (resGenres.data) setAllGenres(resGenres.data.data)
+			if (resPeople.data) setAllPeople(resPeople.data.data)
+		})
+	}, [id])
 
-    // ── Episode helpers ──
-    const nextEpCode = () => {
-        const n = draft.episodes.length + 1
-        return `EP${String(n).padStart(2, '0')}`
-    }
+	const typeValue = draft.type as (typeof TYPES)[number] | ""
 
-    const handleAddEp = () => {
-        const e: Record<string, string> = {}
-        if (!newEp.name.trim()) e.name = 'Required'
-        if (!newEp.price.trim() || isNaN(Number(newEp.price))) e.price = 'Must be a number'
-        if (Object.keys(e).length) { setEpErrors(e); return }
-        setDraft(prev => prev ? ({
-            ...prev,
-            episodes: [...prev.episodes, { code: nextEpCode(), name: newEp.name.trim(), price: newEp.price.trim() }],
-        }) : prev)
-        setNewEp({ name: '', price: '' })
-        setEpErrors({})
-        setShowAddEp(false)
-    }
+	const canSubmit = useMemo(() => {
+		if (saving || saved || loading) return false
+		if (!draft.name.trim() || !draft.slug.trim() || !draft.releaseDate) return false
+		if (!draft.type) return false
+		if (price.trim() && isNaN(Number(price))) return false
+		return true
+	}, [draft, saving, saved, loading, price])
 
-    const handleDeleteEp = (idx: number) => {
-        setDraft(prev => {
-            if (!prev) return prev
-            const updated = prev.episodes.filter((_, i) => i !== idx)
-                .map((ep, i) => ({ ...ep, code: `EP${String(i + 1).padStart(2, '0')}` }))
-            return { ...prev, episodes: updated }
-        })
-    }
+	const handleChange = (field: string, value: string) => {
+		setErrors((prev) => ({ ...prev, [field]: null }))
+		setDraft((prev) => ({ ...prev, [field]: value }))
+	}
 
-    const startEditEp = (idx: number) => {
-        setEditingEpIdx(idx)
-        setEditingEp({ ...draft.episodes[idx] })
-    }
+	const uploadFile = async (file: File, resourceType: "title-poster" | "title-banner" | "title-media") => {
+		const formData = new FormData()
+		formData.append("file", file)
+		formData.append("resourceType", resourceType)
 
-    const saveEditEp = () => {
-        setDraft(prev => {
-            if (!prev || editingEpIdx === null) return prev
-            const updated = [...prev.episodes]
-            updated[editingEpIdx] = editingEp as Episode
-            return { ...prev, episodes: updated }
-        })
-        setEditingEpIdx(null)
-    }
+		const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/products/upload`, {
+			method: "POST",
+			body: formData,
+			credentials: "include",
+		})
 
-    return (
-        <>
-            <Navbar pic={pic} username={username} />
-            <h1 className={styles.pageTitle}>Edit Products</h1>
+		const payload = await res.json().catch(() => null)
+		if (!res.ok) {
+			const message =
+				payload && typeof payload === "object" && "message" in payload ? String(payload.message) : "Upload failed"
+			throw new Error(message)
+		}
+		return String(payload.id)
+	}
 
-            <div className={styles.pageWrapper}>
+	const handleSave = async () => {
+		if (!id) return
+		setSaving(true)
+		try {
+			const posterFileId = posterFile ? await uploadFile(posterFile, "title-poster") : currentPosterId || undefined
+			const bannerFileId = bannerFile ? await uploadFile(bannerFile, "title-banner") : currentBannerId || undefined
+			const movieFileId =
+				draft.type === "MOVIE" && movieFile ? await uploadFile(movieFile, "title-media") : currentMovieId || undefined
 
-                {/* ── Top section: image + fields ── */}
-                <div className={styles.topSection}>
+			const processedSeasons = []
+			if (draft.type === "SERIES") {
+				for (const s of seasonRows) {
+					const eps = []
+					for (const e of s.episodes) {
+						let mediaId = e.currentFileId
+						if (e.movieFile) {
+							mediaId = await uploadFile(e.movieFile, "title-media")
+						}
+						if (!mediaId) throw new Error(`Video file required for Season ${s.seasonNum} Ep ${e.episodeNum}`)
+						eps.push({
+							id: e.id,
+							episodeNum: Number(e.episodeNum),
+							name: e.name,
+							description: e.description,
+							releaseDate: e.releaseDate || s.releaseDate || draft.releaseDate,
+							movieFileId: mediaId,
+						})
+					}
+					processedSeasons.push({
+						id: s.id,
+						seasonNum: Number(s.seasonNum),
+						releaseDate: s.releaseDate || draft.releaseDate,
+						episodes: eps,
+					})
+				}
+			}
 
-                    {/* Image placeholder */}
-                    <div className={styles.imagePlaceholder}>
-                        <div className={styles.imageIcon}>
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5">
-                                <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5"/>
-                                <path d="M21 15l-5-5L5 21"/>
-                            </svg>
-                        </div>
-                    </div>
+			const payload = {
+				name: draft.name.trim(),
+				slug: draft.slug.trim(),
+				releaseDate: draft.releaseDate,
+				type: draft.type as "MOVIE" | "SERIES",
+				price: price.trim() || undefined,
+				posterFileId,
+				bannerFileId,
+				movieFileId,
+				seasons: draft.type === "SERIES" ? processedSeasons : undefined,
+				genres: selectedGenres.map((g) => g.id),
+				cast: castRows.map((c) => ({ peopleId: c.peopleId, role: c.role })),
+			}
 
-                    {/* Fields grid */}
-                    <div className={styles.fieldsSection}>
+			const res = await api.admin.products({ id }).put(payload)
+			setSaving(false)
+			if (res.status === 200) {
+				setSaved(true)
+				setTimeout(() => navigate("/products"), 800)
+			} else {
+				window.alert(`Error: ${res.error?.value?.message || "Failed to update"}`)
+			}
+		} catch (error) {
+			setSaving(false)
+			window.alert(`Error: ${error instanceof Error ? error.message : "Save failed"}`)
+		}
+	}
 
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>CODE <span className={styles.req}>*</span></label>
-                            <div className={styles.fieldValue}>{draft.code}</div>
-                        </div>
+	const addSeason = () => {
+		setSeasonRows((prev) => [...prev, { seasonNum: String(prev.length + 1), releaseDate: "", episodes: [] }])
+	}
 
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>NAME <span className={styles.req}>*</span></label>
-                            <input
-                                className={`${styles.fieldInput} ${errors.name ? styles.inputErr : ''}`}
-                                value={draft.name}
-                                onChange={e => handleChange('name', e.target.value)}
-                            />
-                            {errors.name && <span className={styles.errMsg}>{errors.name}</span>}
-                        </div>
+	const updateSeason = (idx: number, field: keyof SeasonDraft, value: any) => {
+		setSeasonRows((prev) => prev.map((s, i) => (i === idx ? { ...s, [field]: value } : s)))
+	}
 
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>TYPE <span className={styles.req}>*</span></label>
-                            <select
-                                className={`${styles.fieldSelect} ${errors.type ? styles.inputErr : ''}`}
-                                value={draft.type}
-                                onChange={e => handleChange('type', e.target.value)}
-                            >
-                                <option value="">—</option>
-                                {TYPES.map(t => <option key={t}>{t}</option>)}
-                            </select>
-                            {draft.type === 'SERIES' && (
-                                <>
-                                    <label className={styles.fieldLabel} style={{ marginLeft: '24px' }}>Total Episodes</label>
-                                    <div className={styles.fieldValue}>{draft.episodes.length}</div>
-                                </>
-                            )}
-                            {errors.type && <span className={styles.errMsg}>{errors.type}</span>}
-                        </div>
+	const addEpisode = (sIdx: number) => {
+		setSeasonRows((prev) =>
+			prev.map((s, i) => {
+				if (i !== sIdx) return s
+				return {
+					...s,
+					episodes: [
+						...s.episodes,
+						{
+							episodeNum: String(s.episodes.length + 1),
+							name: "",
+							description: "",
+							releaseDate: s.releaseDate || draft.releaseDate,
+							movieFile: null,
+							currentFileId: null,
+						},
+					],
+				}
+			}),
+		)
+	}
 
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>PRICE <span className={styles.req}>*</span></label>
-                            <input
-                                className={`${styles.fieldInput} ${errors.price ? styles.inputErr : ''}`}
-                                value={draft.price}
-                                onChange={e => handleChange('price', e.target.value)}
-                            />
-                            {errors.price && <span className={styles.errMsg}>{errors.price}</span>}
-                        </div>
+	const updateEpisode = (sIdx: number, eIdx: number, field: keyof EpisodeDraft, value: any) => {
+		setSeasonRows((prev) =>
+			prev.map((s, i) => {
+				if (i !== sIdx) return s
+				return {
+					...s,
+					episodes: s.episodes.map((e, j) => (j === eIdx ? { ...e, [field]: value } : e)),
+				}
+			}),
+		)
+	}
 
-                        <div className={styles.fieldRow}>
-                            <label className={styles.fieldLabel}>GENRE <span className={styles.req}>*</span></label>
-                            <select
-                                className={styles.fieldSelect}
-                                value={draft.genre || ''}
-                                onChange={e => handleChange('genre', e.target.value)}
-                            >
-                                <option value="">—</option>
-                                {GENRES.map(g => <option key={g}>{g}</option>)}
-                            </select>
-                        </div>
+	const removeEpisode = (sIdx: number, eIdx: number) => {
+		setSeasonRows((prev) =>
+			prev.map((s, i) => {
+				if (i !== sIdx) return s
+				return { ...s, episodes: s.episodes.filter((_, j) => j !== eIdx) }
+			}),
+		)
+	}
 
-                    </div>
-                </div>
+	const updateCastRole = (idx: number, role: string) => {
+		setCastRows((prev) => prev.map((c, i) => (i === idx ? { ...c, role } : c)))
+	}
 
-                {/* ── Description ── */}
-                <div className={styles.descSection}>
-                    <label className={styles.descLabel}>Description</label>
-                    <textarea
-                        className={styles.descArea}
-                        value={draft.description || ''}
-                        onChange={e => handleChange('description', e.target.value)}
-                        rows={4}
-                    />
-                </div>
+	const removeCastMember = (idx: number) => {
+		setCastRows((prev) => prev.map((c, i) => (i === idx ? { ...c, _deleted: true } : c)).filter((_, i) => i !== idx))
+	}
 
-                {/* ── Episode section (SERIES only) ── */}
-                {draft.type === 'SERIES' && (
-                    <div className={styles.episodeSection}>
-                        <div className={styles.epHeader}>
-                            <button className={styles.addEpBtn} onClick={() => { setShowAddEp(v => !v); setEpErrors({}) }}>
-                                + ADD EPISODE
-                            </button>
-                        </div>
+	if (loading) return <div className={styles.loading}>Loading...</div>
 
-                        <div className={styles.epTableLabel}>Episode Detail</div>
+	return (
+		<>
+			<Navbar pic={pic} username={username} />
+			<h1 className={styles.pageTitle}>Edit Product</h1>
 
-                        <div className={styles.tableWrapper}>
-                            <table className={styles.table}>
-                                <thead>
-                                    <tr>
-                                        <th>CODE</th>
-                                        <th>NAME</th>
-                                        <th>PRICE</th>
-                                        <th>ACTIONS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {draft.episodes.map((ep, idx) => (
-                                        <tr key={ep.code}>
-                                            <td className={styles.epCode}>{ep.code}</td>
-                                            {editingEpIdx === idx ? (
-                                                <>
-                                                    <td><input className={styles.epInput} value={editingEp.name} onChange={e => setEditingEp(p => ({...p, name: e.target.value}))} /></td>
-                                                    <td><input className={styles.epInput} value={editingEp.price} onChange={e => setEditingEp(p => ({...p, price: e.target.value}))} /></td>
-                                                    <td className={styles.actionCell}>
-                                                        <button className={styles.editBtn} onClick={saveEditEp}>Save</button>
-                                                        <button className={styles.deleteBtn} onClick={() => setEditingEpIdx(null)}>Cancel</button>
-                                                    </td>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <td>{ep.name}</td>
-                                                    <td>{ep.price}</td>
-                                                    <td className={styles.actionCell}>
-                                                        <button className={styles.editBtn} onClick={() => startEditEp(idx)}>Edit</button>
-                                                        <button className={styles.deleteBtn} onClick={() => handleDeleteEp(idx)}>Delete</button>
-                                                    </td>
-                                                </>
-                                            )}
-                                        </tr>
-                                    ))}
+			<div className={styles.pageWrapper}>
+				<div className={styles.topSection}>
+					<div className={styles.fieldsSection}>
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>NAME *</label>
+							<div className={styles.inputWrap}>
+								<input
+									className={styles.fieldInput}
+									value={draft.name}
+									onChange={(e) => handleChange("name", e.target.value)}
+								/>
+							</div>
+						</div>
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>SLUG *</label>
+							<div className={styles.inputWrap}>
+								<input
+									className={styles.fieldInput}
+									value={draft.slug}
+									onChange={(e) => handleChange("slug", e.target.value)}
+								/>
+							</div>
+						</div>
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>RELEASE DATE *</label>
+							<div className={styles.inputWrap}>
+								<input
+									type="date"
+									className={styles.fieldInput}
+									value={draft.releaseDate}
+									onChange={(e) => handleChange("releaseDate", e.target.value)}
+								/>
+							</div>
+						</div>
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>TYPE *</label>
+							<div className={styles.inputWrap}>
+								<select
+									className={styles.fieldSelect}
+									value={typeValue}
+									onChange={(e) => handleChange("type", e.target.value)}
+								>
+									<option value="">—</option>
+									{TYPES.map((t) => (
+										<option key={t} value={t}>
+											{t}
+										</option>
+									))}
+								</select>
+							</div>
+						</div>
 
-                                    {/* Inline add form */}
-                                    {showAddEp && (
-                                        <tr className={styles.addRow}>
-                                            <td className={styles.epCode}>{nextEpCode()}</td>
-                                            <td>
-                                                <input
-                                                    className={`${styles.epInput} ${epErrors.name ? styles.inputErr : ''}`}
-                                                    placeholder="Episode name"
-                                                    value={newEp.name}
-                                                    onChange={e => { setEpErrors(p=>({...p,name:null})); setNewEp(p=>({...p,name:e.target.value})) }}
-                                                />
-                                                {epErrors.name && <div className={styles.errMsg}>{epErrors.name}</div>}
-                                            </td>
-                                            <td>
-                                                <input
-                                                    className={`${styles.epInput} ${epErrors.price ? styles.inputErr : ''}`}
-                                                    placeholder="0.00"
-                                                    value={newEp.price}
-                                                    onChange={e => { setEpErrors(p=>({...p,price:null})); setNewEp(p=>({...p,price:e.target.value})) }}
-                                                />
-                                                {epErrors.price && <div className={styles.errMsg}>{epErrors.price}</div>}
-                                            </td>
-                                            <td className={styles.actionCell}>
-                                                <button className={styles.editBtn} onClick={handleAddEp}>Add</button>
-                                                <button className={styles.deleteBtn} onClick={() => { setShowAddEp(false); setEpErrors({}) }}>Cancel</button>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>POSTER</label>
+							<div className={styles.fileAndPreview}>
+								<input type="file" onChange={(e) => setPosterFile(e.target.files?.[0] || null)} />
+								{currentPosterId && !posterFile && previewUrls[currentPosterId] && (
+									<img src={previewUrls[currentPosterId]} className={styles.previewImage} alt="Poster" />
+								)}
+							</div>
+						</div>
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>BANNER</label>
+							<div className={styles.fileAndPreview}>
+								<input type="file" onChange={(e) => setBannerFile(e.target.files?.[0] || null)} />
+								{currentBannerId && !bannerFile && previewUrls[currentBannerId] && (
+									<img src={previewUrls[currentBannerId]} className={styles.previewImage} alt="Banner" />
+								)}
+							</div>
+						</div>
 
-                {/* ── Bottom actions ── */}
-                <div className={styles.bottomBar}>
-                    <button className={styles.backBtn} onClick={() => navigate('/products')}>← Back</button>
-                    <button
-                        className={`${styles.saveBtn} ${saved ? styles.savedBtn : ''}`}
-                        onClick={handleSave}
-                        disabled={saved}
-                    >
-                        {saved ? '✓ SAVED!' : 'SAVE CHANGES'}
-                    </button>
-                </div>
+						{draft.type === "MOVIE" && (
+							<div className={styles.fieldRow}>
+								<label className={styles.fieldLabel}>MOVIE FILE *</label>
+								<div className={styles.fileAndPreview}>
+									<input type="file" onChange={(e) => setMovieFile(e.target.files?.[0] || null)} />
+									{currentMovieId && !movieFile && previewUrls[currentMovieId] && (
+										<video src={previewUrls[currentMovieId]} className={styles.previewVideo} controls />
+									)}
+								</div>
+							</div>
+						)}
 
-            </div>
-        </>
-    )
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>PRICE</label>
+							<input
+								className={styles.fieldInput}
+								value={price}
+								onChange={(e) => setPrice(e.target.value)}
+							/>
+						</div>
+
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>GENRES</label>
+							<button className={styles.lovBtn} onClick={() => setShowGenreLov(true)}>
+								{selectedGenres.length > 0 ? selectedGenres.map((g) => g.name).join(", ") : "Select Genres..."}
+							</button>
+						</div>
+
+						<div className={styles.fieldRow}>
+							<label className={styles.fieldLabel}>CAST</label>
+							<div className={styles.inputWrap}>
+								<button className={styles.lovBtn} onClick={() => setShowPeopleLov(true)}>
+									{castRows.length > 0 ? `${castRows.length} people selected` : "Select People..."}
+								</button>
+								{castRows.length > 0 && (
+									<div className={styles.tableWrapper} style={{ marginTop: "15px" }}>
+										<table className={styles.table}>
+											<thead>
+												<tr>
+													<th>NAME</th>
+													<th>ROLE</th>
+													<th></th>
+												</tr>
+											</thead>
+											<tbody>
+												{castRows.map((c, idx) => (
+													<tr key={idx}>
+														<td>{c.name}</td>
+														<td>
+															<input
+																className={styles.epInput}
+																value={c.role}
+																onChange={(e) => updateCastRole(idx, e.target.value)}
+															/>
+														</td>
+														<td>
+															<button className={styles.delBtn} onClick={() => removeCastMember(idx)}>
+																×
+															</button>
+														</td>
+													</tr>
+												))}
+											</tbody>
+										</table>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{draft.type === "SERIES" && (
+					<div className={styles.seriesSection}>
+						<div className={styles.sectionHeader}>
+							<h2 className={styles.sectionTitle}>Seasons & Episodes</h2>
+							<button className={styles.addBtn} onClick={addSeason}>
+								+ Add Season
+							</button>
+						</div>
+
+						{seasonRows.map((s, sIdx) => (
+							<div key={sIdx} className={styles.seasonCard}>
+								<div className={styles.seasonHeader}>
+									<div className={styles.seasonMain}>
+										<span>Season</span>
+										<input
+											className={styles.smallInput}
+											value={s.seasonNum}
+											onChange={(e) => updateSeason(sIdx, "seasonNum", e.target.value)}
+										/>
+										<span>Release Date</span>
+										<input
+											type="date"
+											className={styles.fieldInput}
+											value={s.releaseDate}
+											onChange={(e) => updateSeason(sIdx, "releaseDate", e.target.value)}
+										/>
+									</div>
+									<button className={styles.addEpBtn} onClick={() => addEpisode(sIdx)}>
+										+ Add Episode
+									</button>
+								</div>
+
+								<div className={styles.epList}>
+									{s.episodes.map((e, eIdx) => (
+										<div key={eIdx} className={styles.epRow}>
+											<div className={styles.epMain}>
+												<div className={styles.epTop}>
+													<input
+														placeholder="No."
+														className={styles.tinyInput}
+														value={e.episodeNum}
+														onChange={(v) => updateEpisode(sIdx, eIdx, "episodeNum", v.target.value)}
+													/>
+													<input
+														placeholder="Episode Name"
+														className={styles.epNameInput}
+														value={e.name}
+														onChange={(v) => updateEpisode(sIdx, eIdx, "name", v.target.value)}
+													/>
+													<input
+														type="date"
+														className={styles.epDateInput}
+														value={e.releaseDate}
+														onChange={(v) => updateEpisode(sIdx, eIdx, "releaseDate", v.target.value)}
+													/>
+												</div>
+												<textarea
+													placeholder="Description"
+													className={styles.epDesc}
+													value={e.description}
+													onChange={(v) => updateEpisode(sIdx, eIdx, "description", v.target.value)}
+												/>
+												<div className={styles.epFile}>
+													<span>Video: </span>
+													<input
+														type="file"
+														onChange={(v) =>
+															updateEpisode(sIdx, eIdx, "movieFile", v.target.files?.[0] || null)
+														}
+													/>
+													{e.currentFileId && !e.movieFile && previewUrls[e.currentFileId] && (
+														<div className={styles.miniPreview}>
+															<a href={previewUrls[e.currentFileId]} target="_blank" rel="noreferrer">
+																Preview Current
+															</a>
+														</div>
+													)}
+												</div>
+											</div>
+											<button className={styles.delBtn} onClick={() => removeEpisode(sIdx, eIdx)}>
+												×
+											</button>
+										</div>
+									))}
+								</div>
+							</div>
+						))}
+					</div>
+				)}
+
+				<div className={styles.bottomBar}>
+					<button className={styles.backBtn} onClick={() => navigate("/products")}>
+						← Back
+					</button>
+					<button className={styles.saveBtn} onClick={handleSave} disabled={!canSubmit}>
+						{saving ? "SAVING..." : saved ? "✓ SAVED!" : "SAVE CHANGES"}
+					</button>
+				</div>
+			</div>
+
+			<LovModal
+				open={showGenreLov}
+				data={allGenres}
+				columns={[
+					{ key: "name", label: "Name" },
+					{ key: "slug", label: "Slug" },
+				]}
+				idKey="id"
+				displayKey="name"
+				title="Select Genres"
+				onSelect={setSelectedGenres}
+				onClose={() => setShowGenreLov(false)}
+			/>
+
+			<LovModal
+				open={showPeopleLov}
+				data={allPeople}
+				columns={[
+					{ key: "name", label: "Name" },
+					{ key: "slug", label: "Slug" },
+				]}
+				idKey="id"
+				displayKey="name"
+				title="Select People"
+				onSelect={(sel) =>
+					setCastRows(sel.map((p) => ({ peopleId: p.id, name: p.name, role: "Actor" })))
+				}
+				onClose={() => setShowPeopleLov(false)}
+			/>
+		</>
+	)
 }

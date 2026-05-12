@@ -68,3 +68,29 @@ export const updateAdminProfileModel = {
 		message: t.String(),
 	}),
 }
+
+export const getAdminSessionsModel = {
+	query: t.Object({
+		page: t.Numeric({ default: 1, minimum: 1 }),
+		limit: t.Numeric({ default: 20, minimum: 1, maximum: 100 }),
+		search: t.Optional(t.String()),
+	}),
+	response: t.Object({
+		data: t.Array(
+			t.Object({
+				token: t.String(),
+				name: t.String(),
+				role: t.String(),
+				device: t.String(),
+			}),
+		),
+		pagination: t.Object({
+			page: t.Number(),
+			limit: t.Number(),
+			total: t.Number(),
+			totalPages: t.Number(),
+			hasNext: t.Boolean(),
+			hasPrev: t.Boolean(),
+		}),
+	}),
+}

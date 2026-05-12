@@ -7,6 +7,7 @@
 	},
 	"dependencies": {
 		"@bogeychan/elysia-logger": "^0.1.10",
+		"@aws-sdk/client-s3": "^3.600.0",
 		"@elysiajs/cors": "^1.4.2",
 		"@modflix/auth": "workspace:*",
 		"@modflix/db": "workspace:*",

@@ -1,5 +1,5 @@
-import { createAuthClient } from "@modflix/auth/client"
+import { createAuthClient } from "@modflix/auth/client";
 
 export const authClient = createAuthClient({
-	baseURL: import.meta.env.VITE_BETTER_AUTH_URL || "http://localhost:3000",
-})
+  baseURL: import.meta.env.VITE_BETTER_AUTH_URL || "http://localhost:3000",
+});

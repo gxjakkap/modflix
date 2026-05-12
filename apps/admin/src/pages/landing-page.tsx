@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import mockGraph from "../assets/normal.jpg"
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import Navbar from "../components/navbar"
 import ReportCard from "../components/report-card"
 import UserCard from "../components/user-card"
@@ -26,6 +26,10 @@ interface Stats {
 		day: string
 		revenue: number
 	}[]
+	sevenDaysPurchasements: {
+		day: string
+		count: number
+	}[]
 }
 
 export default function LandingPage({ pic, username = "Guest" }: LandingPageProps) {
@@ -48,13 +52,43 @@ export default function LandingPage({ pic, username = "Guest" }: LandingPageProp
 			<div className={styles.reportContainer}>
 				<div className={styles.reportCardContainer}>
 					<ReportCard picIndex={1} Data={data?.userCount || 0} Changes={data?.userOneDDiffPercent} />
-					<ReportCard picIndex={2} Data={data?.orderCount || 0} Changes={data?.userOneDDiffPercent} />
+					<ReportCard picIndex={2} Data={data?.orderCount || 0} Changes={data?.orderOneDDiffPercent} />
 					<ReportCard picIndex={3} Data={data?.salesCount || 0} Changes={data?.salesOneDDiffPercent} />
 				</div>
 				<h1 className={styles.detailText}>Sales detail</h1>
 				<div className={styles.detailContainer}>
-					<div className={styles.graphContainer}>
-						<img src={mockGraph} className={styles.graph} />
+					<div className={styles.graphContainer} style={{ padding: "24px 16px 16px" }}>
+						<ResponsiveContainer width="100%" height="100%">
+							<LineChart data={data?.sevenDaysPurchasements ?? []} margin={{ top: 4, right: 16, left: -16, bottom: 0 }}>
+								<CartesianGrid strokeDasharray="3 3" stroke="#f0dcc8" />
+								<XAxis
+									dataKey="day"
+									tick={{ fontSize: 11, fill: "#888" }}
+									tickFormatter={(v) => String(v).slice(5)}
+									tickLine={false}
+								/>
+								<YAxis
+									tick={{ fontSize: 11, fill: "#888" }}
+									tickLine={false}
+									axisLine={false}
+									allowDecimals={false}
+									domain={[0, "auto"]}
+								/>
+								<Tooltip
+									formatter={(value: number) => [value, "Purchasements"]}
+									labelFormatter={(label: string) => `Date: ${label}`}
+								/>
+								<Line
+									type="monotone"
+									dataKey="count"
+									name="Purchasements"
+									stroke="#e85d00"
+									strokeWidth={2.5}
+									dot={{ r: 4, fill: "#e85d00", strokeWidth: 0 }}
+									activeDot={{ r: 6 }}
+								/>
+							</LineChart>
+						</ResponsiveContainer>
 					</div>
 					<div className={styles.topUserContainer}>
 						<h1 className={styles.topUsersText}>Top Users</h1>

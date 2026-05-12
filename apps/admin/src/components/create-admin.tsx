@@ -6,10 +6,9 @@ import type { AdminData } from "../types"
 
 interface CreateAdminProps {
 	onAddSuccess: () => void
-	data?: AdminData[]
 }
 
-function CreateAdmin({ onAddSuccess, data = [] }: CreateAdminProps) {
+function CreateAdmin({ onAddSuccess }: CreateAdminProps) {
 	const [form, setForm] = useState({
 		email: "",
 		username: "",
@@ -52,7 +51,14 @@ function CreateAdmin({ onAddSuccess, data = [] }: CreateAdminProps) {
 				if (res.status !== 200) {
 					setError(res.error?.value.message || "เกิดข้อผิดพลาด!")
 				}
-				setForm({ email: "", username: "", fullname: "", password: "", confirmPassword: "", role: "" })
+				setForm({
+					email: "",
+					username: "",
+					fullname: "",
+					password: "",
+					confirmPassword: "",
+					role: "",
+				})
 				setError("")
 				onAddSuccess()
 			})
@@ -155,7 +161,12 @@ const s: Record<string, React.CSSProperties> = {
 		cursor: "pointer",
 	},
 	body: { padding: "8px" },
-	userId: { fontSize: "20px", fontWeight: "700", color: "#333", marginBottom: "20px" },
+	userId: {
+		fontSize: "20px",
+		fontWeight: "700",
+		color: "#333",
+		marginBottom: "20px",
+	},
 	grid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 24px" },
 	fieldWrap: { display: "flex", flexDirection: "column", gap: "4px" },
 	label: { fontSize: "18px", fontWeight: "700", color: "#333" },

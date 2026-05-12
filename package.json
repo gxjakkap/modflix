@@ -29,6 +29,8 @@
 		"packages/*"
 	],
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.1045.0",
+		"@aws-sdk/s3-request-presigner": "^3.1045.0",
 		"@t3-oss/env-core": "^0.13.10",
 		"zod": "^4.3.6"
 	}

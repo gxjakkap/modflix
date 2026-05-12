@@ -1,11 +1,9 @@
 import type { ClientSideUser } from "@modflix/auth/better-auth-client"
-import { useState } from "react"
 import { Navigate, NavLink, Route, Routes, useNavigate } from "react-router-dom"
 import mockProfilePic from "../assets/rigbyMockProfilePic.png"
-import type { AdminData } from "../types"
 import AdminAccounts from "./admin-accounts"
 import CreateAdmin from "./create-admin"
-import LoginActivity from "./login-activity"
+// import LoginActivity from "./login-activity"
 import Navbar from "./navbar"
 import Sessions from "./Sessions"
 
@@ -14,17 +12,20 @@ interface ManagementDashboardProps {
 }
 
 function ManagementDashboard({ user }: ManagementDashboardProps) {
-	const [data, setData] = useState<AdminData[]>([])
 	const navigate = useNavigate()
-
-	const handleDelete = (id: string) => {
-		setData((prev) => prev.filter((item) => item.id !== id))
-	}
 
 	return (
 		<>
 			<Navbar pic={user.image || mockProfilePic} username={user.username || "username"} />
-			<h1 style={{ color: "white", marginLeft: "9%", marginTop: "20px", fontSize: "40px", marginBottom: 45 }}>
+			<h1
+				style={{
+					color: "white",
+					marginLeft: "9%",
+					marginTop: "20px",
+					fontSize: "40px",
+					marginBottom: 45,
+				}}
+			>
 				Management
 			</h1>
 			<div style={s.dash}>
@@ -35,20 +36,22 @@ function ManagementDashboard({ user }: ManagementDashboardProps) {
 					<NavLink to="/management/sessions" style={({ isActive }) => (isActive ? s.tabOn : s.tab)}>
 						SESSIONS
 					</NavLink>
-					<NavLink to="/management/login-activity" style={({ isActive }) => (isActive ? s.tabOn : s.tab)}>
+					{/* <NavLink to="/management/login-activity" style={({ isActive }) => (isActive ? s.tabOn : s.tab)}>
 						LOGIN ACTIVITY
-					</NavLink>
+					</NavLink> */}
 				</div>
 				<div style={s.card}>
 					<Routes>
 						<Route path="admin" element={<AdminAccounts onAddAdmin={() => navigate("/management/create-admin")} />} />
-						<Route path="sessions" element={<Sessions data={data} onDelete={handleDelete} />} />
-						<Route path="login-activity" element={<LoginActivity data={data} onDelete={handleDelete} />} />
+						<Route path="sessions" element={<Sessions onDelete={() => navigate("/management/sessions")} />} />
+						{/* <Route
+							path="login-activity"
+							element={<LoginActivity data={data} onDelete={handleDelete} />}
+						/> */}
 						<Route
 							path="create-admin"
 							element={
 								<CreateAdmin
-									data={data}
 									onAddSuccess={() => {
 										navigate("/management/admin")
 									}}

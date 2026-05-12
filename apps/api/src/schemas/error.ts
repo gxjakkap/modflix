@@ -1,7 +1,7 @@
-import { t } from "elysia"
+import { t } from "elysia";
 
 export const ErrorModel = t.Object({
-	code: t.Number(),
-	message: t.String(),
-	details: t.Optional(t.Any()),
-})
+  code: t.Number(),
+  message: t.String(),
+  details: t.Optional(t.Any()),
+});

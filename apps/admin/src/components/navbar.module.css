@@ -26,7 +26,7 @@
 .navbarText {
 	color: #ffffff;
 	display: flex;
-	gap: clamp(15px, 3vw, 40px);
+	gap: clamp(10px, 2vw, 25px);
 	align-items: center;
 	justify-content: center;
 }
@@ -36,7 +36,7 @@
 	text-decoration: none;
 	color: #ffffff;
 	font-weight: 400;
-	font-size: clamp(18px, 2vw, 30px);
+	font-size: clamp(14px, 1.8vw, 22px);
 	cursor: pointer;
 	transition: font-size 0.2s ease;
 }

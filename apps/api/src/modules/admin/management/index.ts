@@ -4,10 +4,18 @@ import {
 	banAdminAccountModel,
 	createAdminAccountModel,
 	getAdminAccountsModel,
+	getAdminSessionsModel,
 	unbanAdminAccountModel,
 	updateAdminProfileModel,
 } from "./model"
-import { banAdminAccount, createAdminAccount, getAdminAccounts, unbanAdminAccount, updateAdminProfile } from "./service"
+import {
+	banAdminAccount,
+	createAdminAccount,
+	getAdminAccounts,
+	getAdminSessions,
+	unbanAdminAccount,
+	updateAdminProfile,
+} from "./service"
 
 export const managementModules = new Elysia({ prefix: "/manage" })
 	.patch(
@@ -133,6 +141,38 @@ export const managementModules = new Elysia({ prefix: "/manage" })
 			body: unbanAdminAccountModel.body,
 			response: {
 				200: unbanAdminAccountModel.response,
+				400: ErrorModel,
+				500: ErrorModel,
+			},
+		},
+	)
+	.get(
+		"/admin-sessions",
+		async ({ query }) => {
+			const { page, limit, search } = query
+			const offset = (page - 1) * limit
+
+			const { rows, total } = await getAdminSessions(offset, limit, search)
+
+			console.log(rows)
+			console.log(total)
+
+			return {
+				data: rows,
+				pagination: {
+					page,
+					limit,
+					total,
+					totalPages: Math.ceil(total / limit),
+					hasNext: page * limit < total,
+					hasPrev: page > 1,
+				},
+			}
+		},
+		{
+			query: getAdminSessionsModel.query,
+			response: {
+				200: getAdminSessionsModel.response,
 				400: ErrorModel,
 				500: ErrorModel,
 			},

@@ -1,7 +1,7 @@
 import { auth } from "@modflix/auth"
 import Elysia from "elysia"
 
-export const betterAuth = new Elysia({ name: "better-auth" }).mount(auth.handler).macro({
+export const authMacro = new Elysia({ name: "auth-macro" }).macro({
 	auth: {
 		async resolve({ status, request: { headers } }) {
 			const session = await auth.api.getSession({
@@ -17,3 +17,5 @@ export const betterAuth = new Elysia({ name: "better-auth" }).mount(auth.handler
 		},
 	},
 })
+
+export const betterAuth = new Elysia({ name: "better-auth" }).use(authMacro).mount(auth.handler)
