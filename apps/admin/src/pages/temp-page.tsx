@@ -1,7 +1,7 @@
 import { useState } from "react";
 import searchIcon from "../assets/search.png";
 import Navbar from "../components/navbar";
-import Pagination from "../components/Pagination";
+import Pagination from "../components/pagination";
 import type { Column } from "../types";
 import styles from "./temp-page.module.css";
 
@@ -127,7 +127,7 @@ export default function TempPage<T extends object>({
           <Pagination
             current={currentPage}
             total={totalPages}
-            onChange={(p) => setPage?.(p)}
+            onChange={(p: number) => setPage?.(p)}
           />
         )}
       </div>

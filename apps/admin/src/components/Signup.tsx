@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Background from "./Background";
+import Background from "./background";
 import logoPic from "../assets/Logo.png";
 import closeEye from "../assets/closepassword.png";
 import openEye from "../assets/openpassword.png";

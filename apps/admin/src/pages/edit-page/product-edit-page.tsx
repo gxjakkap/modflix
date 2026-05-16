@@ -214,7 +214,7 @@ export default function ProductEditPage({ pic, username }: ProductEditPageProps)
 				setSaved(true)
 				setTimeout(() => navigate("/products"), 800)
 			} else {
-				window.alert(`Error: ${res.error?.value?.message || "Failed to update"}`)
+				window.alert(`Error: ${(res.error?.value as any)?.message || "Failed to update"}`)
 			}
 		} catch (error) {
 			setSaving(false)

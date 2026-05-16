@@ -76,8 +76,8 @@ export default function LandingPage({ pic, username = "Guest" }: LandingPageProp
 									domain={[0, "auto"]}
 								/>
 								<Tooltip
-									formatter={(value: ValueType) => [value ?? 0, "Purchasements"]}
-									labelFormatter={(label: NameType) => `Date: ${String(label ?? "")}`}
+									formatter={(value: any) => [value ?? 0, "Purchasements"]}
+									labelFormatter={(label: any) => `Date: ${String(label ?? "")}`}
 								/>
 								<Line
 									type="monotone"

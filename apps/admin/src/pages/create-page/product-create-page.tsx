@@ -148,7 +148,7 @@ export default function ProductCreatePage({ pic, username }: ProductCreatePagePr
 				setSaved(true)
 				setTimeout(() => navigate("/products"), 800)
 			} else {
-				window.alert(`Error: ${res.error?.value?.message || "Failed to create"}`)
+				window.alert(`Error: ${(res.error?.value as any)?.message || "Failed to create"}`)
 			}
 		} catch (error) {
 			setSaving(false)

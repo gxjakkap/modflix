@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { AdminData } from "../types";
-import Pagination from "./Pagination";
+import Pagination from "./pagination";
 import SearchBar from "./search-bar";
 
 
