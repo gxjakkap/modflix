@@ -47,6 +47,7 @@ export const auth = betterAuth({
 	],
 	trustedOrigins: [
 		process.env.API_URL || "http://localhost:3000",
-		...(process.env.TRUSTED_ORIGINS?.split(",") || ["http://localhost:5173", "http://localhost:5174"]),
+		...(process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:5173", "http://localhost:5174"]),
+		...(process.env.TRUSTED_ORIGINS?.split(",") || []),
 	],
 })
