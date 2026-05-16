@@ -1,10 +1,8 @@
 import { useState } from "react";
 import type { AdminData } from "../types";
-import AdminAccountDropdown from "./admin-account-dropdown";
 import Pagination from "./Pagination";
 import SearchBar from "./search-bar";
 
-const ACTIONS = ["View Details", "Block IP", "More Activity"];
 
 const riskStyle: Record<string, React.CSSProperties> = {
   LOW: { background: "#eaf3de", color: "#3B6D11" },
@@ -57,10 +55,13 @@ function LoginActivity({ data, onDelete }: LoginActivityProps) {
                 </span>
               </td>
               <td style={{ ...s.td, position: "relative" }}>
-                <AdminAccountDropdown
-                  actions={ACTIONS}
-                  onDelete={() => onDelete(r.id)}
-                />
+                <button
+                  style={s.actionBtn}
+                  onClick={() => onDelete(r.id)}
+                  type="button"
+                >
+                  ACTIONS ▼
+                </button>
               </td>
             </tr>
           ))}
@@ -104,5 +105,16 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: "8px",
     fontSize: "10px",
     fontWeight: "600",
+  },
+  actionBtn: {
+    background: "#e85d00",
+    color: "#fff",
+    border: "none",
+    borderRadius: "10px",
+    padding: "4px 8px",
+    fontSize: "14px",
+    fontWeight: "600",
+    cursor: "pointer",
+    whiteSpace: "nowrap",
   },
 };

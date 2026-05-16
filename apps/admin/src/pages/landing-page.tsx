@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent"
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import Navbar from "../components/navbar"
 import ReportCard from "../components/report-card"
@@ -75,8 +76,8 @@ export default function LandingPage({ pic, username = "Guest" }: LandingPageProp
 									domain={[0, "auto"]}
 								/>
 								<Tooltip
-									formatter={(value: number) => [value, "Purchasements"]}
-									labelFormatter={(label: string) => `Date: ${label}`}
+									formatter={(value: ValueType) => [value ?? 0, "Purchasements"]}
+									labelFormatter={(label: NameType) => `Date: ${String(label ?? "")}`}
 								/>
 								<Line
 									type="monotone"

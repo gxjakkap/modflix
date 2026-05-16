@@ -1,7 +1,7 @@
 import { useState } from "react";
 import searchIcon from "../assets/search.png";
 import Navbar from "../components/navbar";
-import Pagination from "../components/pagination";
+import Pagination from "../components/Pagination";
 import type { Column } from "../types";
 import styles from "./temp-page.module.css";
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import AdminAccountDropdown from "./admin-account-dropdown";
-import Pagination from "./pagination";
+import Pagination from "./Pagination";
 import SearchBar from "./search-bar";
 
 interface AdminAccountsProps {

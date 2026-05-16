@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { api } from "../lib/api"
 import AdminSessionDropdown from "./admin-session-dropdown"
-import Pagination from "./pagination"
+import Pagination from "./Pagination"
 import SearchBar from "./search-bar"
 
 interface SessionsProps {
