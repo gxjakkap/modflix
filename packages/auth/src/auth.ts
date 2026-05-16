@@ -25,11 +25,14 @@ const adminRole = ac.newRole({
 	...adminAc.statements,
 })
 
+const isProd = process.env.NODE_ENV === "production"
+
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "pg",
 		schema,
 	}),
+	baseURL: process.env.BETTER_AUTH_URL || process.env.API_URL || "http://localhost:3000",
 	emailAndPassword: {
 		enabled: true,
 	},
@@ -50,4 +53,13 @@ export const auth = betterAuth({
 		...(process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:5173", "http://localhost:5174"]),
 		...(process.env.TRUSTED_ORIGINS?.split(",") || []),
 	],
+	advanced: {
+		useSecureCookies: isProd,
+		crossSubdomainCookies: isProd
+			? {
+				enabled: true,
+				domain: ".guntxjakka.me",
+			}
+			: { enabled: false },
+	},
 })
