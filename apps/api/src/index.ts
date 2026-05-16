@@ -7,6 +7,12 @@ import { adminModules } from "./modules/admin";
 
 const PORT = Number(process.env.API_PORT) || 3000;
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : true;
+
+console.log("allowedOrigins: ", allowedOrigins)
+
 const app = new Elysia({
   serve: {
     maxRequestBodySize: 1024 * 1024 * 1024 * 5,
@@ -14,7 +20,7 @@ const app = new Elysia({
 })
   .use(
     cors({
-      origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",") : true,
+      origin: allowedOrigins,
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
